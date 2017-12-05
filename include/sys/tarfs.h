@@ -24,4 +24,7 @@ struct posix_header_ustar {
   char pad[12];
 };
 
+void tarfs_init();
+uint64_t getElfHeader(char * fileName);
+struct file *tarfs_open(const char *, int, uint32_t, int);
 #endif

@@ -1,16 +1,31 @@
 #ifndef _ELF64_H
 #define _ELF64_H
-
+//#include <sys/defs.h>
 #define EI_NIDENT 16
+#define PERM_X  0x1 //Execute
+#define PERM_W  0x2 //Write
+#define PERM_R  0x4 //Read
+#include <sys/defs.h>
+
 
 typedef uint64_t Elf64_Addr;
 typedef uint16_t Elf64_Half;
 typedef uint64_t Elf64_Lword;
 typedef uint64_t Elf64_Off;
 typedef uint32_t Elf64_Sword;
-typedef uint64_t Elf64_Sxword
+typedef uint64_t Elf64_Sxword;
 typedef uint32_t Elf64_Word;
 typedef uint64_t Elf64_Xword;
+
+enum vma_types {
+
+        TEXT,
+        DATA,
+        STACK,
+        HEAP,
+        NOTYPE
+};
+
 
 typedef struct {
   unsigned char e_ident[EI_NIDENT];

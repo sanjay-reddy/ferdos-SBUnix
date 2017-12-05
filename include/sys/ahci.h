@@ -25,6 +25,16 @@
 #define ATA_STATUS_BSY  0x80 // Indicates the drive is preparing to send/receive data (wait for it to clear).
                              // In case of 'hang' (it never clears), do a software reset.
 
+#define ATA_CMD_READ_DMA_EX 0x25
+#define ATA_CMD_WRITE_DMA_EX 0x35
+#define AHCI_KERN_BASE 0xFFFFFFFF00000000
+#define AHCI_BASE 0x800000
+
+
+#define HBA_PORT_DET_PRESENT 3
+#define HBA_PORT_IPM_ACTIVE 1
+#define AHCI_DEV_NULL 0
+
 #define CMD_FIS_DEV_LBA (1U << 6)
 
 #define MAX_CMD_SLOT_CNT 32
@@ -333,5 +343,10 @@ typedef volatile struct {
   // 0x100 - 0x10FF, Port control registers
   hba_port_t ports[MAX_PORT_CNT]; // 1 ~ 32
 }__attribute__((__packed__)) hba_mem_t;
+
+void probe_port(hba_mem_t *abar);
+uint16_t pciConfigReadWord (uint8_t bus, uint8_t slot,uint8_t func, uint8_t offset);
+uint64_t checkAllBuses() ;
+
 
 #endif
