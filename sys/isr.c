@@ -22,6 +22,7 @@
 #include<string.h>
 #include<sys/kprintf.h>
 #include<sys/syscall.h>
+#include<syscall.h>
 
 extern void isr_timer();
 extern void isr_keyboard();
@@ -133,8 +134,8 @@ execute_interrupt(struct isr_regs *reg)
 		tick_timer(reg);
 	if(reg->int_no == 33 )
 		keyboard_inter_key(reg);
-	if(reg->int_no == 128 )
-		syscall_handler(reg);
+//	if(reg->int_no == 128 )
+//		syscall_handler(reg);
 
 }
 
@@ -151,7 +152,10 @@ void interrupt_handler_key(struct isr_regs *reg)
         keyboard_inter_key(reg);
 }
 
+/*
 void interrupt_syscall(struct isr_regs *reg)
 {
 	syscall_handler(reg);
 }
+*/
+

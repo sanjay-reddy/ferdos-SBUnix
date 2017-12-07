@@ -33,8 +33,7 @@ struct PT{
         uint64_t pt_entries[512];
 };
 
-void * kmalloc();
-
+uint64_t kmalloc(uint64_t size);
 void pagetable_init();
 
 void page_init();
@@ -68,6 +67,8 @@ uint64_t get_pdt_entry(struct PDT **pdt, uint64_t pdt_indx);
 uint64_t get_pt_entry(struct PT **pt, uint64_t pt_indx);
 
 void* get_phy_addr(uint64_t vaddr);
-
+void set_CR3(struct PML4 *new_cr3);
+uint64_t set_user_AddrSpace();
+uint64_t get_CR3();
 vma_struct * addVMA(Elf64_Ehdr *ehdr, uint64_t start,uint64_t end,uint64_t flags,uint64_t pheader_offset,uint64_t type, uint64_t p_filesz);
 #endif

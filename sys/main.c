@@ -8,6 +8,7 @@
 #include <sys/task.h>
 #include <sys/syscall.h>
 #include <syscall.h>
+#include <sys/elf64.h>
 #define INITIAL_STACK_SIZE 4096
 
 
@@ -56,11 +57,15 @@ void start(uint32_t *modulep, void *physbase, void *physfree)
 }
 
 mem_alloc(max_mem, (uint64_t)physfree, (uint64_t)physbase);
- 
-testContextSwitch();
+create_init_process(); 
+//testContextSwitch();
+Task * process = create_process("bin/sbush");
+jump_to_user_mode(process);
+int a;
+if(!process) a=2;
 //task_struct *process = create_userProcess("");
 //switch_Ring3(process);
-//kprintf("\nNumber of pages %d", max_mem);   
+kprintf("\nNumber of pages %d", a);   
 //load_cr3();
 
 //tarfs_init();

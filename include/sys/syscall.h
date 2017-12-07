@@ -46,6 +46,8 @@ static void *syscalls[3] =
    &monitor_write_hex,
    &monitor_write_dec,
 };
+
+
 u32int num_syscalls = 3;
 
 void initialise_syscalls()

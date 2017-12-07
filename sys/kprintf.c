@@ -168,6 +168,16 @@ void prints(char *str)
 		}
 }
 
+void printbackspace()
+{
+
+	char b = (char)32;
+	*video -= 2;
+	*video++ = b;
+	*video = colour;
+
+}
+
 
 int kprintf1(const char *fmt, va_list args)
 {
@@ -185,6 +195,9 @@ int kprintf1(const char *fmt, va_list args)
                         video =(volatile char *)( ( line_count * 0xA0 ) + startpos);
                         line_count++;
                         break;
+		case '\b':
+			printbackspace();
+			break;
 
                 case '%':
                         i++;
@@ -249,6 +262,10 @@ void kprintf(const char *fmt, ...)
 			video =(volatile char *)( ( line_count * 0xA0 ) + startpos);
                		line_count++;
 			break;
+
+                case '\b':
+                        printbackspace();
+                        break;
 		
 		case '%':
 			i++;

@@ -16,13 +16,16 @@ typedef struct Task {
     uint64_t pml4e_addr;	
     struct Task *next;
     uint64_t kstack[512];
+    uint64_t ustack;
     uint64_t task_rsp;
     uint64_t task_cr3;
+    uint64_t task_rip;
     uint64_t entry_pt;
+    uint64_t kernel_rsp;
 } Task;
- 
+//Task * current;
 extern void createTask(Task*, void(*)(), uint64_t, uint64_t*);
- 
+void create_init_process(); 
 extern void yield(); // Switch task frontend
 extern void switchTask(Registers *old, Registers *new); // The function which actually switches
 
@@ -76,7 +79,7 @@ struct tss_entry_struct
    uint16_t trap;
    uint16_t iomap_base;
 } __packed;
- 
+Task * create_process(char *file_name);
 typedef struct tss_entry_struct tss_entry_t;
 void jump_to_user_mode();
 #endif /* __TASK_H__ */

@@ -6,7 +6,7 @@
 #define PERM_W  0x2 //Write
 #define PERM_R  0x4 //Read
 #include <sys/defs.h>
-
+#include <sys/task.h>
 
 typedef uint64_t Elf64_Addr;
 typedef uint16_t Elf64_Half;
@@ -54,5 +54,5 @@ typedef struct {
   Elf64_Xword   p_memsz;
   Elf64_Xword   p_align;
 } Elf64_Phdr;
-
+void elf_load(struct Task *task, char *file_name);
 #endif

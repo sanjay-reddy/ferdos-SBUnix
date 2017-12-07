@@ -1,83 +1,219 @@
-#include<string.h>
+#include <stdio.h>
+#include <string.h>
+
+//static char *token = NULL;
+
+char* strcpy(char *dest,const char *src)
+{
+	char *saved = dest; 
+
+	while(*src){
+		*dest = *src;
+		src++;
+		dest++;
+	}
+	*dest = '\0';
+
+	return saved;
+}
+
+char* strncpy(char *dest,const char *src,int count)
+{
+	char *saved = dest;
+
+	while(count && *src) {
+		*dest = *src;
+		src++;
+		dest++;
+		count--;
+	}
+	*dest = '\0';
+
+	return saved;
+}
+
+int strcmp(const char *str1,const char *str2)
+{
+	while(*str1 && *str2 && *str1 == *str2) {
+		str1++;
+		str2++;
+	}
+
+	return *str1 - *str2;
+}
+
+int strncmp(const char *str1,const char *str2,int count)
+{
+        while(count) {
+		if(*str1 && *str2 && *str1 == *str2) {
+                str1++;
+                str2++;
+		} else {
+			return *str1-*str2;
+			break;
+		}
+		count--;
+		
+        }
+
+        return 0;
+}
 
 
+int strlen(const char *str)
+{
+	int len = 0;
+
+	while(*str++ )
+		len++;
+
+	return len;
+}
+
+void strcat(char *new,const char *orig)
+{
+	while (*new!= '\0')
+        	new++;
+	do
+    	{
+	        *new++ = *orig++;
+
+    	}
+    	while (*orig != '\0') ;
+}
+
+void strncat(char *new,const char *orig,int count)
+{
+	if(count) {
+		while(*++new);
+
+		while(count && *orig){
+			*new++ = *orig++;
+			count--;
+		}
+		
+		*new = '\0';
+	}
+}
+
+char* index(char *str,char chr)
+{
+	while(*str) {
+  		if (*str == chr)
+    			return (char *) str;
+
+		str++;
+	}
+
+	return NULL;
+}	
+
+void
+bzero(void *string,unsigned bytes)
+{
+	char *res = string;
+
+	while (bytes != 0) {
+		*res++ = 0;
+		bytes--;
+	}
+}
+
+
+char* strtok(char* parse_str,const char* delims)
+{
+
+	static char *token = NULL;
+	char *str_ptr = NULL;
+	int index = 0;
+	int str_len = strlen(delims);
+ 
+	if(!parse_str && !token)
+		return NULL;
+ 
+	if(parse_str && !token)
+        	token = parse_str;
+
+	str_ptr = token;
+	while(1) {
+        	for(index = 0; index < str_len; index ++) {
+            		if(*str_ptr == delims[index]) {
+                		str_ptr ++;
+                		break;
+            		}
+        	}
+ 
+		if(index == str_len) {
+               		token = str_ptr;
+               		break;
+        	}
+    	}
+
+	if(*token == '\0') {
+		token = NULL;
+		return token;
+	}
+
+	while(*token != '\0') {
+		for(index = 0; index < str_len; index ++) {
+			if(*token == delims[index]) {
+				*token = '\0';
+                		break;
+            		}
+        	}
+ 
+        	token ++;
+        	
+		if (index < str_len)
+            		break;
+    	}
+    	return str_ptr;
+}
+
+
+int str_to_int(char *str)
+{
+	 int pos = 0;
+        char buffer[10] = {'\0'};
+        strcpy(buffer,str);
+        while ((buffer[pos] != '\0') && (buffer[pos] != '\n' ) ){
+        pos++;
+        }
+        pos--;
+        int val = 0;
+        int io =1;
+        while (pos >= 0) {
+                buffer[pos] = buffer[pos] - 48;
+                val = val + buffer[pos]*io;
+                pos--;
+                io= io*10;
+        }
+
+        return val;
+
+}
+int atoi(char *str)
+{
+
+        int ret = str_to_int(str);
+        return ret;
+}
 void memset(void *ptr, int value, uint64_t num)
 {
         int i = 0;
         for(; i < num; i++)
-                ((char *)ptr)[i] = 0;
+                ((char *)ptr)[i] = value;
 }
 
-int strlen(char* string) {
-
-        int i;
-        if(string == 0)
-        {
-                //puts("empty string\n");
-                return -1;
-        }
-        for (i=0; string[i] != '\0'; i++);
-
-        return i;
-}
-
-char* strcopy (char* dest, const char* source, int numchar) {
-
-	int i;
-	for (i=0; source[i] != '\0' && i < numchar-1; i++) {
-		dest[i] = source[i];
-	}
-	dest[i] = '\0';
-
-	return dest;
-}
-
-int strcmp (const char* s1, const char* s2, int numchar) {
-
-	int i;
-
-	for (i=0; i<numchar && s1[i] != '\0' && s2[i] != '\0'; i++) {
-		if (s1[i] < s2[i])
-			return -1;	
-		else if (s1[i] > s2[i])
-			return 1;						 
-	}
-	if (i == numchar)
-		return 0;
-		    
-	if (s1[i] == '\0' && s2[i] != '\0')
-		return -1;
-	else if (s1[i] != '\0')
-		return 1;	
-	else
-		return 0;
-}
-
-char* strcat(char* dest, const char* source) {
-
-        //      We assume, in good faith, that dest and source are
-        //      null-terminated, and dest has more than enough space to
-        //      accomodate src.
-        int i, j;
-        if( source == 0 )
-                return dest;
-        if( dest == 0 && source != 0)
-        {
-
-                for (j=0; source[j] != '\0'; j++)
-                {
-                        dest[j] = source[j];
-                }
-                dest[j] = '\0';
-                return dest;
-        }
-        // Iterate through all of dest until we arrive at '\0' character
-        for (i=0; dest[i] != '\0'; i++);
-
-        for (j=0; source[j] != '\0'; j++, i++) {
-                dest[i] = source[j];
-        }
-        dest[i] = '\0';
-
-        return dest;
+void *memcpy(void *dest, const void *src, uint64_t n)
+{
+    unsigned char *pd = (unsigned char *)dest;
+    const unsigned char *ps = (unsigned char *)src;
+    if ( ps < pd )
+        for (pd += n, ps += n; n--;)
+            *--pd = *--ps;
+    else
+        while(n--)
+            *pd++ = *ps++;
+    return dest;
 }

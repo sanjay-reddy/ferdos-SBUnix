@@ -1,7 +1,7 @@
 #include <sys/defs.h>
-#include<sys/kprintf.h>
+#include <sys/kprintf.h>
 #include <sys/interrupts.h>
-
+#include <string.h>
 static uint8_t lastkey;
 
 unsigned char kbsmall[128] =
@@ -85,6 +85,47 @@ unsigned char kbcaps[128] =
     0,    /* All other keys are undefined */
 };
 
+
+/*
+uint64_t scanf(char * buff)
+{
+        uint8_t val;
+        uint8_t scancode;
+        scancode = inb(0x60);
+        outb(0x20,0x20);
+        if(scancode<59){
+
+        if(scancode ==28)
+                {
+                        kprintf("%s\n",buff);
+                }
+
+        if(lastkey == 42)
+        {
+                val = kbcaps[scancode];
+                if(scancode!=42)
+                kprintf("%c",val);
+        }
+        else
+        {
+                if(lastkey == 29 )
+                {
+                        kprintf("^");
+                        val = kbcaps[scancode];
+                        kprintf("%c",val);
+                }
+                else
+                {
+                val = kbsmall[scancode];
+                kprintf("%c",val);
+                }
+
+        }
+        lastkey = scancode;
+        }
+}
+*/
+
 void keyboard_inter_key(struct isr_regs *r)
 {
 	uint8_t val;
@@ -92,6 +133,17 @@ void keyboard_inter_key(struct isr_regs *r)
 	scancode = inb(0x60);
         outb(0x20,0x20);
 	if(scancode<59){
+	
+	if(scancode == 14 )
+	{
+		kprintf("\b");
+	}	
+	
+/*	if(scancode ==28)
+		{
+			kprintf("%s\n",buff);
+		}
+*/
 	if(lastkey == 42)
 	{
 		val = kbcaps[scancode];

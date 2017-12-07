@@ -1,4 +1,4 @@
- #include <sys/kprintf.h>
+#include <sys/kprintf.h>
 #include <sys/defs.h>
 #include <sys/phymap.h>
 #include <sys/task.h>
@@ -12,7 +12,7 @@ static uint64_t maxPhysMem;
 uint64_t start_vAddr = IDEN_V;
 void load_CR3(){
 	uint64_t base_pgdir_addr = (uint64_t)cr3;
-	__asm volatile("movq %0,%%cr3"::"r"(base_pgdir_addr));
+	__asm volatile("movq %0,%%cr3"::"b"(base_pgdir_addr));
 }
 /* get/set helper CR3 functions */
 uint64_t get_CR3()
@@ -121,7 +121,7 @@ struct PDPT * pdpt_alloc(struct PML4 * pml4,uint64_t pml4_index)
 	uint64_t pdpt_entry = (uint64_t)pdpt;
 	pdpt_entry |= (PTE_P|PTE_W|PTE_U);
 	pml4->pt_entries[pml4_index] = pdpt_entry;
-	return pdpt;
+	return (void *)pdpt;
 }
 struct PDT * pdt_alloc(struct PDPT * pdpt,uint64_t pdpt_index)
 {
@@ -129,7 +129,7 @@ struct PDT * pdt_alloc(struct PDPT * pdpt,uint64_t pdpt_index)
 	uint64_t pdt_entry = (uint64_t)pdt;
 	pdt_entry |= (PTE_P|PTE_W|PTE_U);
 	pdpt->pt_entries[pdpt_index] = pdt_entry;
-	return pdt;
+	return (void *)pdt;
 }
 struct PT * pt_alloc(struct PDT * pdt,uint64_t pdt_index)
 {
@@ -137,7 +137,7 @@ struct PT * pt_alloc(struct PDT * pdt,uint64_t pdt_index)
 	uint64_t pt_entry = (uint64_t)pt;
 	pt_entry |= (PTE_P|PTE_W|PTE_U);
 	pdt->pt_entries[pdt_index] = pt_entry;
-	return pt;
+	return (void *)pt;
 }
 void pagetable_init()
 {
@@ -173,7 +173,7 @@ void pagetable_init()
 void mapAllpages()
 {
 	uint64_t viraddr = physfree;
-	while(viraddr<=maxPhysMem)
+	while(viraddr<=0x500000)
 	{
 		map_virt_address(viraddr,viraddr);
 		viraddr+=0x1000;
@@ -218,23 +218,27 @@ void map_virt_address(uint64_t vaddr,uint64_t paddr){
         pt->pt_entries[ptIndex] = entry;
 
 }
-void * kmalloc()
+uint64_t kmalloc(uint64_t size)
 {
-	uint64_t newPage = (uint64_t) page_alloc()->addr;
-	struct PML4 *newPML4 = (struct PML4*)get_CR3();
-	pml4 = newPML4;
-	
-	set_CR3(pml4);
-	start_vAddr += 0x1000;
-	map_process(start_vAddr, newPage);
-	//memset((void *)top_vAddr, 0, 4096);
-
-	return (void *)(start_vAddr);
+        if(size>0){
+                int cnt=0;
+                int i=0;
+                cnt = size/4096;
+                if(size%4096>0)
+                        cnt++;
+                uint64_t ret_addr;
+                ret_addr=(uint64_t)(page_alloc()->addr);
+                for(i=1;i<cnt;i++){
+                        page_alloc();
+                }
+                return ret_addr;
+        }
+        return 0;
 }
 /* returns the pml4 entry */
 uint64_t get_pml4_entry(struct PML4 **pml4, uint64_t pml4_indx)
 {
-	*pml4 = (struct PML4 *)((uint64_t)*pml4 | IDEN_V);
+	//*pml4 = (struct PML4 *)((uint64_t)*pml4 | IDEN_V);
 	uint64_t pml4_entry = (*pml4)->pt_entries[pml4_indx];
 	
 	return pml4_entry;
@@ -243,7 +247,7 @@ uint64_t get_pml4_entry(struct PML4 **pml4, uint64_t pml4_indx)
 /* returns the pdpt entry */
 uint64_t get_pdpt_entry(struct PDPT** pdpt, uint64_t pdpt_indx)
 {
-	*pdpt = (struct PDPT *)((uint64_t)*pdpt | IDEN_V);
+	//*pdpt = (struct PDPT *)((uint64_t)*pdpt | IDEN_V);
 	uint64_t pdpt_entry = (*pdpt)->pt_entries[pdpt_indx];
 
 	return pdpt_entry;	
@@ -252,7 +256,7 @@ uint64_t get_pdpt_entry(struct PDPT** pdpt, uint64_t pdpt_indx)
 /* returns the pdt entry */
 uint64_t get_pdt_entry(struct PDT **pdt, uint64_t pdt_indx)
 {
-	*pdt = (struct PDT *) ((uint64_t) *pdt | IDEN_V);
+	//*pdt = (struct PDT *) ((uint64_t) *pdt | IDEN_V);
 	uint64_t pdt_entry = (*pdt)->pt_entries[pdt_indx];
 
 	return pdt_entry;
@@ -261,7 +265,7 @@ uint64_t get_pdt_entry(struct PDT **pdt, uint64_t pdt_indx)
 /* returns the pt entry */
 uint64_t get_pt_entry(struct PT **pt, uint64_t pt_indx)
 {
-	*pt = (struct PT *)((uint64_t) *pt | IDEN_V);
+	//*pt = (struct PT *)((uint64_t) *pt | IDEN_V);
 	uint64_t pt_entry = (*pt)->pt_entries[pt_indx];
 
 	return pt_entry;
@@ -279,7 +283,7 @@ void map_process(uint64_t vaddr,uint64_t paddr)
 
 	struct PML4 *pml4 = (struct PML4*) get_CR3();
 
-	pml4 = (struct PML4*) (IDEN_V | (uint64_t) pml4); 
+	//pml4 = (struct PML4*) (IDEN_V | (uint64_t) pml4); 
         uint64_t pml4_entry = pml4->pt_entries[pml4_indx];
 
         if(pml4_entry & PTE_P)
@@ -302,7 +306,7 @@ void map_process(uint64_t vaddr,uint64_t paddr)
 		pt = (struct PT*)pt_alloc(pdt, pdt_indx);
 
 
-	pt = (struct PT*)((uint64_t) pt | IDEN_V);
+	//pt = (struct PT*)((uint64_t) pt | IDEN_V);
         uint64_t entry = paddr;
         entry |= (PTE_P|PTE_W|PTE_U);
 
@@ -341,14 +345,14 @@ return vma;
 }
 uint64_t set_user_AddrSpace()
 {       
-        struct PML4 *newPML4 = (struct PML4 *)page_alloc();
+        struct PML4 *newPML4 = (struct PML4 *)page_alloc()->addr;
         struct PML4 *curPML4 = (struct PML4 *)get_CR3();
         
         //curPML4 = (struct PML4 *)((uint64_t)curPML4 | IDEN_V);
         
         /* map the kernel page table for the process */
-//for(int i=0;i<=511;i++)  
-newPML4->pt_entries[511] = curPML4->pt_entries[511];
+	for(int i=0;i<=511;i++)  
+	newPML4->pt_entries[i] = curPML4->pt_entries[i];
         
         return (uint64_t)newPML4;
 }

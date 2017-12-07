@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <syscall.h>
 #include <string.h>
-
+#include <unistd.h>
 int puts(char *s)
 {
 
-if(write(1,(uint64_t)s,(uint64_t)strlen(s))==1)
+if(write(1,(char *)s,(uint64_t)strlen(s))==1)
 {
 	return 1;
 }

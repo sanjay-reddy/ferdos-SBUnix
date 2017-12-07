@@ -3,6 +3,49 @@
 
 #include <sys/defs.h>
 
+
+int open(char *pathname, int flags);
+int close(int fd);
+ssize_t read(int fd, char *buf, size_t count);
+ssize_t write(int fd, char *buf, size_t count);
+int unlink(const char *pathname);
+
+int listfiles(char *path,int pipe);
+int catfiles(char *path,int pipe);
+int echofiles(char *path,int pipe);
+
+
+int chdir(char *path);
+char *getcwd(char *buf, size_t size);
+
+pid_t fork();
+pid_t wait(int *status);
+pid_t waitpid(pid_t pid, int *status,int options);
+
+unsigned int sleep(unsigned int seconds);
+
+pid_t getpid(void);
+pid_t getppid(void);
+
+int execve(const char *filename,char *const argv[],char *const envp[]);
+int execvpe(const char *filename,char *const argv[],char *const envp[]);
+
+unsigned int sleep(unsigned int seconds);
+
+int kill(int pid_t);
+void exit(int arg1);
+
+unsigned int sleep(unsigned int seconds);
+
+// OPTIONAL: implement for ``on-disk r/w file system (+10 pts)''
+//off_t lseek(int fd, off_t offset, int whence);
+//int mkdir(const char *pathname, mode_t mode);
+
+// OPTIONAL: implement for ``signals and pipes (+10 pts)''
+//int pipe(int pipefd[2]);
+
+
+/*
 int open(const char *pathname, int flags);
 int close(int fd);
 ssize_t read(int fd, void *buf, size_t count);
@@ -28,5 +71,7 @@ int mkdir(const char *pathname, mode_t mode);
 
 // OPTIONAL: implement for ``signals and pipes (+10 pts)''
 int pipe(int pipefd[2]);
+
+*/
 
 #endif
