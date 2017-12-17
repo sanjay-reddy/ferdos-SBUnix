@@ -1,4 +1,4 @@
-/*#ifndef _DIRENT_H
+#ifndef _DIRENT_H
 #define _DIRENT_H
 
 #define NAME_MAX 255
@@ -8,6 +8,8 @@
 #define stdin 0
 #define stdout 1
 #define stderr 2
+
+struct dirent {
  char d_name[NAME_MAX+1];
 }dirent;
 
@@ -27,4 +29,4 @@ struct dirent *readdir(DIR *dirp);
 int closedir(DIR *dirp);
 
 #endif
-*/
+

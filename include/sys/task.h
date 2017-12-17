@@ -2,19 +2,38 @@
 #define __TASK_H__
 #define USER_STACK_TOP 0xF0000000
 #define HEAP_START 0x08000000
+#define TASK_WAITING 0x0
+#define TASK_RUNNING 0x1
+#define TASK_ENDED 0x2
+#define TASK_ZOMBIE 0x3
+#define TASK_WAIT_FOR_CHILD 0x4
 #include "sys/defs.h" 
 extern void initTasking();
  
 typedef struct {
     uint64_t rax, rbx, rcx, rdx, rsi, rdi, rsp, rbp, rip, rflags, cr3;
 } Registers;
- 
+typedef struct vm_area_struct {
+        uint64_t start;
+        uint64_t end;                
+        struct vm_area_struct *next;
+        uint64_t flags;              
+        uint64_t type;
+        uint64_t vm_memsz;
+        uint64_t vm_offset;
+        uint64_t vm_file;
+        //struct file *file;           // reference to file descriptors for file opened for writing
+}vma_struct; 
 typedef struct Task {
     Registers regs;
+    char task_name[64];
     uint16_t pid;
     uint16_t ppid;
-    uint64_t pml4e_addr;	
+    uint16_t state;
+    uint64_t pml4e_addr;
+    char cwd[128];	
     struct Task *next;
+    vma_struct * vma;	
     uint64_t kstack[512];
     uint64_t ustack;
     uint64_t task_rsp;
@@ -27,27 +46,15 @@ typedef struct Task {
 extern void createTask(Task*, void(*)(), uint64_t, uint64_t*);
 void create_init_process(); 
 extern void yield(); // Switch task frontend
-extern void switchTask(Registers *old, Registers *new); // The function which actually switches
+extern void switchTask(); // The function which actually switches
 
 struct file{
     uint64_t   start;       /* start address of region */
-    uint64_t   pgoff;       /* offset in file or NULL */
+    uint64_t   pgoff;      /* offset in file or NULL */
     uint64_t   size;        /* region initialised to here */
     uint64_t   bss_size;
 };
 
-typedef struct vm_area_struct {
-        uint64_t start;             
-        uint64_t end;               
-        struct vm_area_struct *next; 
-        uint64_t flags;              
-        uint64_t type;
-	uint64_t vm_memsz;
-	uint64_t vm_offset;
-	uint64_t vm_file;
-        struct file *file;           // reference to file descriptors for file opened for writing
-}vma_struct;
-vma_struct * head;
 // A struct describing a Task State Segment.
 struct tss_entry_struct
 {
@@ -82,4 +89,13 @@ struct tss_entry_struct
 Task * create_process(char *file_name);
 typedef struct tss_entry_struct tss_entry_t;
 void jump_to_user_mode();
+void addProcessToList(Task *);
+char * SYSS_getcwd();
+int proc_fork();
+void syss_exit();
+int sanexecve(char *binary,char **argv, char **envp);
+int proc_ps();
+int killprocess(uint64_t pid);
+void SYSS_changedir(char *path);
+void SYSS_waitpid(int pid);
 #endif /* __TASK_H__ */

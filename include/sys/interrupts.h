@@ -71,6 +71,9 @@ extern void interrupt_handler(struct isr_regs *);
 extern void install_timer();
 extern void tick_timer(struct isr_regs*);
 extern void keyboard_inter_key(struct isr_regs *r);	
+extern void pg_fault_handler(struct isr_regs *r);
+/* Keyboard scanf  */
+uint64_t scanf(void * buff,int len);
 
 
 #endif

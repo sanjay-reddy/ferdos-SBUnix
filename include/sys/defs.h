@@ -4,7 +4,9 @@
 #define NULL ((void*)0)
 #define IDEN_V		0xFFFFFFFF00000000UL	
 #define	IDEN_P		0x0UL
-
+#define PF_P	0x1
+#define PF_W	0x2
+#define PF_U	0x4
 typedef unsigned long  uint64_t;
 typedef          long   int64_t;
 typedef unsigned int   uint32_t;

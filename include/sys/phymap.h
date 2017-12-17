@@ -11,6 +11,7 @@
 #define FRAME		0xFFFFFFFFFFFFF000 // the permission bits.
 #define VIDEO_MEMORY    0xb8000UL
 #define PAGE_SIZE 0x1000
+#define PTE_COW 0x100
 uint64_t cr3;
 
 struct Page{
@@ -59,13 +60,13 @@ void mapAllpages();
 void map_process(uint64_t,uint64_t);
 
 uint64_t get_pml4_entry(struct PML4 **pml4, uint64_t pml4_indx);
-
+uint64_t get_address(uint64_t* entry);
 uint64_t get_pdpt_entry(struct PDPT** pdpt, uint64_t pdpt_indx);
 
 uint64_t get_pdt_entry(struct PDT **pdt, uint64_t pdt_indx);
-
+uint64_t phyAddr(uint64_t vaddr);
 uint64_t get_pt_entry(struct PT **pt, uint64_t pt_indx);
-
+void copy_page_tables_forchild(uint64_t child_PML4);
 void* get_phy_addr(uint64_t vaddr);
 void set_CR3(struct PML4 *new_cr3);
 uint64_t set_user_AddrSpace();

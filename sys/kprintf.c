@@ -13,9 +13,70 @@ int quit_flg = 0;
 
 static volatile char * video = (volatile char * )0xffffffff800b8000UL;
 static long int line_count = 0x1;
+static int line_width = 1;
 long int  startpos =  0xffffffff800b8000UL;
 int colour = 2;
+//static volatile char * start_scroll =(volatile char *)0xffffffff800b8000UL;
 
+//long int scroll_check= 0xffffffff800B8DC0UL;
+//static char * end_scroll = (char *)0xffffffff800B8DC0UL;
+
+int kstrlen(const char *str)
+{
+        int len = 0;
+
+        while(*str++ )
+                len++;
+
+        return len;
+}
+
+
+char* kstrcpy(char *dest,const char *src)
+{
+        char *saved = dest;
+
+        while(*src){
+                *dest = *src;
+                src++;
+                dest++;
+        }
+        *dest = '\0';
+
+        return saved;
+}
+
+int kstr_to_int(char *str)
+{
+         int pos = 0;
+        char buffer[10] = {'\0'};
+        kstrcpy(buffer,str); 
+        while ((buffer[pos] != '\0') && (buffer[pos] != '\n' ) ){
+        pos++;
+        }
+        pos--;
+        int val = 0;
+        int io =1; 
+        while (pos >= 0) {
+                buffer[pos] = buffer[pos] - 48;
+                val = val + buffer[pos]*io;
+                pos--;
+                io= io*10;
+        }
+
+        return val;
+
+}
+
+int kstrcmp(const char *str1,const char *str2)
+{
+        while(*str1 && *str2 && *str1 == *str2) {
+                str1++;
+                str2++;
+        }
+
+        return *str1 - *str2;
+}
 
 void print_char(unsigned long decimal)
 {	
@@ -43,7 +104,7 @@ void print_char(unsigned long decimal)
 	   k++;	
 	}
 	var[k]='\0';
-
+	line_width = line_width + kstrlen(var);
 	l=0;
 	p = var[l];
 	while(p!='\0')
@@ -142,6 +203,7 @@ char p;
         }
         var[k]='\0';
         l=0;
+	line_width += kstrlen(var);
         p = var[l];
         while(p!='\0')
         {
@@ -166,15 +228,19 @@ void prints(char *str)
                 m++;
                 f = str[m]; 
 		}
+	line_width += kstrlen(str);
 }
 
 void printbackspace()
 {
 
 	char b = (char)32;
-	*video -= 2;
+	*video--;
+	*video--;
 	*video++ = b;
-	*video = colour;
+	*video++ = colour;
+	*video--;
+	*video--;
 
 }
 
@@ -187,7 +253,7 @@ int kprintf1(const char *fmt, va_list args)
         long p_arg;
         int c_arg;
         do
-         {
+         {	
                 c = fmt[i];
                 switch(c)
                 {
@@ -244,8 +310,26 @@ int kprintf1(const char *fmt, va_list args)
 }
 
 
+void screenclear()
+{
+	video =(volatile char *)(startpos);
+	int m = 0;
+	while(m<1840)
+	{
+		
+		/**start_scroll++ = (char)32;
+		*start_scroll++ = colour;*/
+		kprintf(" ");
+		line_width--;
+		m++;
+	}
+	//start_scroll = (volatile char *)startpos;
+	video = (volatile char *)startpos;
+}
+
 void kprintf(const char *fmt, ...)
 {
+
         int i = 0; 
 	va_list ap;
 	va_start(ap,fmt);
@@ -254,17 +338,28 @@ void kprintf(const char *fmt, ...)
 	long p_arg;
 	int c_arg;
 	do   
-	 {
+	 {	
+		if(line_width>80)
+		{
+			line_count++;
+		}
 		c = fmt[i];
 		switch(c)
 		{
 		case '\n':
 			video =(volatile char *)( ( line_count * 0xA0 ) + startpos);
                		line_count++;
+			line_width = 1;
+			if(line_count >23)
+			{
+				screenclear();
+				line_count = 1;
+			}
 			break;
 
                 case '\b':
                         printbackspace();
+			line_width--;
                         break;
 		
 		case '%':
@@ -286,6 +381,7 @@ void kprintf(const char *fmt, ...)
 				c_arg = va_arg(ap,int);	
 				*video++ = c_arg;
 		                *video++ = colour;
+				line_width++;
 				}
 			if (c == 's')
 				{
@@ -303,6 +399,7 @@ void kprintf(const char *fmt, ...)
 		default:	
 			*video++ = c;
 		    	*video++ = colour;
+			line_width++;
 			break;
 		}
 		i++;	

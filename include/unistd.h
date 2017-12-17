@@ -6,7 +6,7 @@
 
 int open(char *pathname, int flags);
 int close(int fd);
-ssize_t read(int fd, char *buf, size_t count);
+ssize_t read(int fd,void *buf, size_t count);
 ssize_t write(int fd, char *buf, size_t count);
 int unlink(const char *pathname);
 
@@ -14,9 +14,12 @@ int listfiles(char *path,int pipe);
 int catfiles(char *path,int pipe);
 int echofiles(char *path,int pipe);
 
+void ps();
 
 int chdir(char *path);
-char *getcwd(char *buf, size_t size);
+char *getcwd(char *buf,uint64_t size);
+void changedir(char *path);
+
 
 pid_t fork();
 pid_t wait(int *status);

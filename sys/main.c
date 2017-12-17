@@ -9,6 +9,8 @@
 #include <sys/syscall.h>
 #include <syscall.h>
 #include <sys/elf64.h>
+#include <unistd.h>
+#include <stdio.h>
 #define INITIAL_STACK_SIZE 4096
 
 
@@ -17,10 +19,24 @@ typedef hba_port_t HBA_PORT;
 uint8_t initial_stack[INITIAL_STACK_SIZE]__attribute__((aligned(16)));
 uint32_t* loader_stack;
 extern char kernmem, physbase;
+extern Task * currentRunningTask;
 char stack[4096];
 static size_t num_pages_base;   // Number of pages in base memory
 static size_t num_pages_upper;
 int max_mem;
+char* asstrcpy(char *dest,const char *src)
+{
+        char *saved = dest;
+
+        while(*src){
+                *dest = *src;
+                src++;
+                dest++;
+        }
+        *dest = '\0';
+
+        return saved;
+}
 void testContextSwitch()
 
 {   
@@ -47,7 +63,7 @@ void start(uint32_t *modulep, void *physbase, void *physfree)
                 num_pages_upper =((smap->base+smap->length) - (uint64_t)physfree)/PAGE_SIZE;
                 //kprintf("Higher Memory Pages = %d\n",num_pages_upper);
             }
-      kprintf("Available Physical Memory [%p-%p]\n", smap->base, smap->base + smap->length);
+//      kprintf("Available Physical Memory [%p-%p]\n", smap->base, smap->base + smap->length);
       max_mem = (smap->base + smap->length)/PAGE_SIZE;
      // kprintf("Max_mem %d", max_mem);      
 
@@ -59,25 +75,65 @@ void start(uint32_t *modulep, void *physbase, void *physfree)
 mem_alloc(max_mem, (uint64_t)physfree, (uint64_t)physbase);
 create_init_process(); 
 //testContextSwitch();
+
+
+//commented user mode
 Task * process = create_process("bin/sbush");
+
+//addProcessToList(process);
+//currentRunningTask = process;
+
+//commented user mode
 jump_to_user_mode(process);
-int a;
-if(!process) a=2;
+
+//char* *testc=(char **)page_alloc()->addr;
+//asstrcpy(testc[0],"Mankatha da");
+
+//commented last
+//sanexecve("bin/ls",NULL,NULL);
+
+//int a;
+//if(!process) a=2;
+
+
 //task_struct *process = create_userProcess("");
 //switch_Ring3(process);
-kprintf("\nNumber of pages %d", a);   
+//kprintf("\nNumber of pages %d", a);   
 //load_cr3();
 
-//tarfs_init();
+/*
+char fbuf[15];
+char *file = "etc/test.txt";
+uint64_t fno = openfile(file);
+kprintf("main:%s",fno);
+readfile(fno,10,(uint64_t)fbuf);
+kprintf("\nFile:%s",fbuf);
+*/
 
-kprintf("physfree %p\n", (uint64_t)physfree);
-kprintf("physbase %p\n", (int64_t)physbase);
-kprintf("tarfs in [%p:%p]\n", &_binary_tarfs_start, &_binary_tarfs_end);
+// Directory related stuffs tested here.
+/*
+char *direct="lib/";
+kprintf("\n");
+uint64_t dno = opendirect(direct);
+kprintf("%p\n",dno); 
+readdirect(direct);
+*/
+
+
+//kprintf("physfree %p\n", (uint64_t)physfree);
+//kprintf("physbase %p\n", (int64_t)physbase);
+//kprintf("tarfs in [%p:%p]\n", &_binary_tarfs_start, &_binary_tarfs_end);
 
 //char *temptext = "test";
 
-//sys_write(1,(uint64_t)temptext,5);
+
+// commented after testing write sys_call
+//puts("test");
+//write((int)1,temptext,(size_t)5);
+//sys_write(1,(uint64s_t)temptext,5);
 //syscall_3((uint64_t)1, (uint64_t)1,(uint64_t)temptext,(uint64_t)5);
+
+
 //__asm__ volatile("sti");
 
 }
@@ -94,6 +150,11 @@ void boot(void)
   );
   init_gdt();
   reload_idt();
+
+// tarfs initialized here 
+
+  tarfs_init();
+
 //  reinit_PIC();
 __asm__ volatile("sti");
 

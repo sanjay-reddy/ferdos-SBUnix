@@ -3,6 +3,68 @@
 # isr.s
 #
 
+.global isr_timer
+.global isr_keyboard
+.global isr_syscall
+.global page_fault_handler
+
+isr_timer:
+	callq interrupt_handler_timer
+	iretq
+
+isr_keyboard:       
+	callq interrupt_handler_key
+        iretq
+
+isr_syscall:
+	pushq %rdi
+	pushq %rax
+	pushq %rbx
+	pushq %rcx
+	pushq %rdx
+	pushq %rbp
+	pushq %rsi
+	pushq %r8
+	pushq %r9
+	movq %rsp,%rdi
+	callq interrupt_handler_syscall
+	popq %r9
+	popq %r8
+	popq %rsi
+	popq %rbp
+	popq %rdx
+	popq %rcx
+	popq %rbx
+	popq %rax
+	popq %rdi
+	iretq
+
+page_fault_handler:
+        pushq %rdi
+        pushq %rax
+        pushq %rbx
+        pushq %rcx
+        pushq %rdx
+        pushq %rbp
+        pushq %rsi
+        pushq %r8
+        pushq %r9
+        movq %rsp,%rdi
+        callq pg_fault_handler
+        popq %r9
+        popq %r8
+        popq %rsi
+        popq %rbp
+        popq %rdx
+        popq %rcx
+        popq %rbx
+        popq %rax
+        popq %rdi
+	addq $8, %rsp
+        iretq
+
+
+/*
 .text
 
 .global _x86_64_asm_ildt
@@ -21,12 +83,6 @@ _x86_64_asm_ildt:
 		jmp __isrroutine
 .ENDM
 
-SET_INTERRUPT_EC isr_timer 32
-SET_INTERRUPT_EC isr_keyboard 33
-SET_INTERRUPT_EC isr_syscall 128 
-
-/*
-
 .macro SET_INTERRUPT name num
         .globl \name
         .type \name, @function
@@ -35,6 +91,14 @@ SET_INTERRUPT_EC isr_syscall 128
                 jmp __isrroutine
 .ENDM
 
+SET_INTERRUPT_EC isr_timer 32
+SET_INTERRUPT_EC isr_keyboard 33
+SET_INTERRUPT_EC isr_syscall 128 
+SET_INTERRUPT_EC isr13 13 
+SET_INTERRUPT isr14 14 
+*/
+
+/*
 
 SET_INTERRUPT_EC isr0 0 
 SET_INTERRUPT_EC isr1 1 
@@ -72,8 +136,6 @@ SET_INTERRUPT_EC isr_timer 32
 SET_INTERRUPT_EC isr_keyboard 33 
 SET_INTERRUPT_EC isr_syscall 128 
 
-*/
-
 .globl __isrroutine 
 __isrroutine:
 	pushq %rdi
@@ -96,11 +158,9 @@ __isrroutine:
 	popq %rbx
 	popq %rax
 	popq %rdi
-	addq $16 ,%rsp 
 	iretq
 	sti
 
-/*
 .global isr_keyboard
 isr_keyboard:
         cli
@@ -140,9 +200,7 @@ isr_keyboard:
         addq $8 ,%rsp
         iretq
         sti
-*/
 
-/*
 .global isr_timer 
 isr_timer:
 	cli

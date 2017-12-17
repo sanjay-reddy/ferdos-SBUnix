@@ -36,7 +36,7 @@
 #define SYS_catfiles    17
 #define SYS_echofiles   18
 #define SYS_yield       19
-
+#define SYS_changedir   150
 /*
 static void syscall_handler(registers_t *regs);
 
@@ -97,7 +97,37 @@ int sys_open(char *,uint64_t);
 
 int sys_read(uint64_t,uint64_t,uint64_t);
 
+int sys_echofiles(char * arg, int pipe);
 
+int sys_sleep(uint64_t seconds);
+
+int sys_killprocess(uint64_t pid);
+
+int sys_listfiles(char *path,int pipe);
+
+int sys_catfiles(char *path,int pipe);
+
+int sys_listprocess();
+
+int sys_getpid();
+
+int sys_getppid();
+
+void  sys_close(int fd_count);
+
+uint64_t sys_getcwd(char *buf, uint64_t size);
+
+int sys_chdir(char *path);
+
+int sys_fork();
+
+int sys_execve(char *par1,char **par2,char **par3);
+
+void sys_exit();
+
+void sys_changedir(char *path);
+
+int sys_waitpid(uint64_t childpid,uint64_t status,uint64_t options);
 
 // Enables registration of callbacks for interrupts or IRQs.
 // For IRQs, to ease confusion, use the #defines above as the

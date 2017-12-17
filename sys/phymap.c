@@ -2,6 +2,7 @@
 #include <sys/defs.h>
 #include <sys/phymap.h>
 #include <sys/task.h>
+#include <string.h>
 struct Page *pages;
 static struct Page * free_list;
 static int noofpages;
@@ -54,8 +55,8 @@ void mem_alloc(int no_of_pages,uint64_t  phys_free,uint64_t  end_address)
 	mapAllpages();
 	map_virt_address((uint64_t)0xffffffff800b8000UL, VIDEO_MEMORY);	
 	load_CR3();
-	uint64_t addressss = (uint64_t)page_alloc()->addr;
-	kprintf("Summa-sdgsdg %x",addressss);
+//	uint64_t addressss = (uint64_t)page_alloc()->addr;
+	//kprintf("Summa-sdgsdg %x",addressss);
 }
 void page_init()
 {
@@ -325,7 +326,6 @@ vma_struct *vma = (vma_struct *)kmalloc((uint64_t)4096);
 vma->start = start;
 vma->end =  end;
 vma->flags = flags;
-vma->file = NULL;
 vma->next = NULL;
 vma->type = type;
 
@@ -355,4 +355,102 @@ uint64_t set_user_AddrSpace()
 	newPML4->pt_entries[i] = curPML4->pt_entries[i];
         
         return (uint64_t)newPML4;
+}
+void copy_page_tables_forchild(uint64_t child_PML4)
+{       
+        struct PML4 *c_pml4 = (struct PML4 *)child_PML4;
+        struct PML4 *p_pml4 = (struct PML4 *)get_CR3();
+        
+        int pml4_indx = 0;
+        for(; pml4_indx < 510; pml4_indx++) {
+                
+                uint64_t pml4_entry = get_pml4_entry(&p_pml4, pml4_indx);
+                
+                if(pml4_entry & PTE_P) {
+                        
+                        struct PDPT *c_pdpt = (struct PDPT *)pdpt_alloc(c_pml4, pml4_indx);
+                        
+                        struct PDPT *p_pdpt = (struct PDPT *) get_address(&pml4_entry);
+                        int pdpt_indx = 0;
+                        for(; pdpt_indx < 512; pdpt_indx++) {
+                                
+                                uint64_t pdpt_entry = get_pdpt_entry(&p_pdpt, pdpt_indx);
+                                if(pdpt_entry & PTE_P) {
+                                        
+                                        //struct PDPT *tmp_pdpt = c_pdpt; 
+                                        struct PDT *c_pdt = (struct PDT *)pdt_alloc(c_pdpt, pdpt_indx);
+                                        
+                                        struct PDT *p_pdt = (struct PDT *) get_address(&pdpt_entry);
+                                        int pdt_indx = 0;
+                                        for(; pdt_indx < 512; pdt_indx++) {
+                                                
+                                                uint64_t pdt_entry = get_pdt_entry(&p_pdt, pdt_indx);
+                                                if(pdt_entry & PTE_P) {
+                                                        
+                                                        //struct PDT *tmp_pdt = c_pdt;
+                                                        struct PT *c_pt = (struct PT *)pt_alloc(c_pdt, pdt_indx);
+                                                        
+                                                        struct PT *p_pt = (struct PT *)get_address(&pdt_entry);
+                                                        int pt_indx = 0;
+                                                        for(; pt_indx < 512; pt_indx++) {
+                                                                
+                                                               uint64_t pt_entry = get_pt_entry(&p_pt, pt_indx);
+                                                                if(pt_entry & PTE_P) {
+                                                                        uint64_t page = (uint64_t)get_address(&pt_entry);
+                                                                        pt_entry = page | (PTE_P | PTE_U | PTE_COW);
+                                                                        
+  		                                                        c_pt->pt_entries[pt_indx] = pt_entry;
+                						//	char temp[4096];
+								//	memcpy((void*)&temp[0],(void*)p_pt->pt_entries[pt_index],4096);
+										                                                        
+                                                                        pt_entry = page | (PTE_P | PTE_U |PTE_COW);
+                                                                        p_pt->pt_entries[pt_indx] = pt_entry;
+									//switchtochildcr3
+									//memcpy((void*)c_pt->pt_entries[pt_indx],(void*)p_pt->pt_entries[pt_indx],4096);
+									//switchbacktoparentCR3
+									
+                                                                }
+                                                        }
+                                                }
+                                        }
+                                }
+                        }
+                }
+        }
+        c_pml4->pt_entries[511] = p_pml4->pt_entries[511];
+        c_pml4->pt_entries[510] = p_pml4->pt_entries[510];
+}
+
+uint64_t phyAddr(uint64_t vaddr)
+{
+	uint64_t	paddr = 0;
+	struct PDPT     *pdpt = NULL;
+        struct PDT      *pdt = NULL;
+        struct PT       *pt = NULL;
+
+        uint64_t pml4_indx = getPML4Index((uint64_t)vaddr);
+        uint64_t pdpt_indx = getPDPTIndex((uint64_t)vaddr);
+        uint64_t pdt_indx = getPDTIndex((uint64_t)vaddr);
+        uint64_t pt_indx = getPTIndex((uint64_t)vaddr);
+
+        struct PML4 *pml4 = (struct PML4*) get_CR3();
+        uint64_t pml4_entry = pml4->pt_entries[pml4_indx];
+
+        if(pml4_entry & PTE_P)
+                pdpt = (struct PDPT *)get_address(&pml4_entry);
+
+        uint64_t pdpt_entry = get_pdpt_entry(&pdpt, pdpt_indx);
+        if(pdpt_entry & PTE_P)
+                pdt = (struct PDT*)get_address(&pdpt_entry);
+
+
+        uint64_t pdt_entry = get_pdt_entry(&pdt, pdt_indx);
+        if(pdt_entry & PTE_P)
+                pt = (struct PT*)get_address(&pdt_entry);
+
+	/* page table entry is not null, extract the physical address */ 
+	if(pt != NULL)
+		paddr = get_pt_entry(&pt, pt_indx);
+
+	return paddr;	
 }

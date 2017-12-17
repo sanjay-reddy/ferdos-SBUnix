@@ -23,11 +23,11 @@
 #include<sys/kprintf.h>
 #include<sys/syscall.h>
 #include<syscall.h>
-
+#include <sys/phymap.h>
 extern void isr_timer();
 extern void isr_keyboard();
 extern void isr_syscall();
-
+extern void page_fault_handler();
 
 
 struct idt_entry idt[256];	// initialising IDT 
@@ -122,27 +122,37 @@ void init_isr()
 	
 	idt_set_gate(32, ((uint64_t)isr_timer),0x08, 0x8E);
         idt_set_gate(33, ((uint64_t)isr_keyboard),0x08, 0x8E);
-	idt_set_gate(128, ((uint64_t)isr_syscall),0x08, 0x8E);
+	idt_set_gate(128, ((uint64_t)isr_syscall),0x08, 0xEE);
+	idt_set_gate(14,(uint64_t)page_fault_handler,0x08,0x8E);
 	//reinit_PIC();
 }
 
 
-static void
-execute_interrupt(struct isr_regs *reg)
+/*void page_fault_handler()
+{
+	kprintf("page fault has occured\n");
+}*/
+/*
+void execute_interrupt(struct isr_regs *reg)
 {
 	if(reg->int_no == 32)	
 		tick_timer(reg);
 	if(reg->int_no == 33 )
 		keyboard_inter_key(reg);
-//	if(reg->int_no == 128 )
-//		syscall_handler(reg);
+	if(reg->int_no == 128 )
+		syscall_handler(reg);
+	if(reg->int_no == 13)
+		// to handle gpf
+	if(reg->int_no == 14)
+		page_fault_handler();
 
 }
+*/
 
-
-void interrupt_handler(struct isr_regs *reg)
+void interrupt_handler_syscall(struct isr_regs *reg)
 {
-	execute_interrupt(reg);
+	syscall_handler(reg);
+//	outb(0x20, 0x20);
 
 }
 
@@ -150,6 +160,39 @@ void interrupt_handler(struct isr_regs *reg)
 void interrupt_handler_key(struct isr_regs *reg)
 {
         keyboard_inter_key(reg);
+}
+
+void interrupt_handler_timer(struct isr_regs *reg)
+{
+	tick_timer(reg);
+}
+void pg_fault_handler(struct isr_regs *reg)
+{
+	volatile uint64_t faultAddr;
+
+	__asm volatile("mov %%cr2, %0" : "=r" (faultAddr));
+
+
+//	uint64_t err = reg->err_code & 0xF;
+
+	// COW page fault handling
+//	if((err & PF_P) && (err & PF_W)) {
+
+		uint64_t pte_entry = phyAddr(faultAddr);
+		if(pte_entry & PTE_COW) {
+			uint64_t temp_vaddr = (uint64_t)kmalloc(4096);
+			uint64_t paddr = phyAddr(get_address(&temp_vaddr));
+			//uint64_t v = (faultAddr&(0xffffffffffffffffUL<<12));
+			faultAddr = ((faultAddr / 4096) * 4096);
+			//memcpy((void *)temp_vaddr, (void *)(faultAddr&(0xffffffffffffffffUL<<12)), 4096);
+			memcpy((void *)temp_vaddr, (void *)(faultAddr), 4096);
+			//map_process(faultAddr&(0xffffffffffffffffUL<<12), paddr);
+			map_process(faultAddr, paddr);
+
+			pte_entry = (pte_entry & ~0xfff)| PTE_P | PTE_W | PTE_U; 
+			return;
+		}	
+//	}
 }
 
 /*

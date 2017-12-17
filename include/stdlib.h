@@ -2,6 +2,8 @@
 #define _STDLIB_H
 
 #include <sys/defs.h>
+//char cwd[1024];
+char cbuf[100];
 
 int main(int argc, char *argv[], char *envp[]);
 void exit(int status);

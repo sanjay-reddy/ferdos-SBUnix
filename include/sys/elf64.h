@@ -54,5 +54,5 @@ typedef struct {
   Elf64_Xword   p_memsz;
   Elf64_Xword   p_align;
 } Elf64_Phdr;
-void elf_load(struct Task *task, char *file_name);
+void elf_load(struct Task *, char *,int,char **args);
 #endif
