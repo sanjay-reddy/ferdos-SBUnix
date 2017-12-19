@@ -444,7 +444,7 @@ return NULL;
 }
 void SYSS_waitpid(int pid)
 {
-	kprintf("\nWAITPID called");
+	//	kprintf("\nWAITPID called");
 	Task *cur;
         cur = current;
         while(cur != NULL)

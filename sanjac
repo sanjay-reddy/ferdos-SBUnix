@@ -1,0 +1,1427 @@
+
+rootfs/bin/sbush:     file format elf64-x86-64
+
+
+Disassembly of section .text:
+
+00000000004000f0 <_start>:
+#include <stdlib.h>
+
+void _start(void) {
+  4000f0:	48 83 ec 08          	sub    $0x8,%rsp
+  // call main() and exit() here
+main(0,NULL,NULL);
+  4000f4:	ba 00 00 00 00       	mov    $0x0,%edx
+  4000f9:	be 00 00 00 00       	mov    $0x0,%esi
+  4000fe:	bf 00 00 00 00       	mov    $0x0,%edi
+  400103:	e8 05 00 00 00       	callq  40010d <main>
+
+        "movq %rax, %rdi;"
+        "movq $60, %rax;"
+        "syscall"
+    );*/
+}
+  400108:	48 83 c4 08          	add    $0x8,%rsp
+  40010c:	c3                   	retq   
+
+000000000040010d <main>:
+#include<stdlib.h>
+#include<stdio.h>
+#include<unistd.h>
+#include<syscall.h>
+
+int main(int argc, char *argv[], char *envp[]) {
+  40010d:	55                   	push   %rbp
+  40010e:	53                   	push   %rbx
+  40010f:	48 83 ec 08          	sub    $0x8,%rsp
+char *temp1 = "parent";
+//char buf[5];
+//int pid;
+//if(temp == NULL) return 0;
+//write(1,(char *)temp,5);
+syscall_3((uint64_t)1, (uint64_t)1,(uint64_t)temp,(uint64_t)5);
+  400113:	48 8d 2d 79 06 00 00 	lea    0x679(%rip),%rbp        # 400793 <memcpy+0x41>
+    return res;
+}
+
+static __inline uint64_t syscall_3(uint64_t n, uint64_t a1, uint64_t a2, uint64_t a3) {
+	uint64_t a; 
+    __asm__ volatile("int $0x80" : "=a" (a) : "0" (n), "D" ((uint64_t)a1), "S" ((uint64_t)a2), "b"((uint64_t)a3)); 
+  40011a:	b8 01 00 00 00       	mov    $0x1,%eax
+  40011f:	bb 05 00 00 00       	mov    $0x5,%ebx
+  400124:	48 89 c7             	mov    %rax,%rdi
+  400127:	48 89 ee             	mov    %rbp,%rsi
+  40012a:	cd 80                	int    $0x80
+//syscall_3((uint64_t)1, (uint64_t)1,(uint64_t)temp,(uint64_t)5);
+//int num = 1927;
+//char c = 'v';
+puts("\nfunc\n");
+  40012c:	48 8d 3d 66 06 00 00 	lea    0x666(%rip),%rdi        # 400799 <memcpy+0x47>
+  400133:	e8 56 02 00 00       	callq  40038e <puts>
+//printf("yellow\n");
+//printf("%d \n %c",num,c);
+//while(1);
+int pid = fork();
+  400138:	b8 00 00 00 00       	mov    $0x0,%eax
+  40013d:	e8 06 01 00 00       	callq  400248 <fork>
+if(pid != 0) syscall_3((uint64_t)1, (uint64_t)1,(uint64_t)temp,(uint64_t)5);
+  400142:	85 c0                	test   %eax,%eax
+  400144:	74 0f                	je     400155 <main+0x48>
+  400146:	b8 01 00 00 00       	mov    $0x1,%eax
+  40014b:	48 89 c7             	mov    %rax,%rdi
+  40014e:	48 89 ee             	mov    %rbp,%rsi
+  400151:	cd 80                	int    $0x80
+  400153:	eb 16                	jmp    40016b <main+0x5e>
+  400155:	b8 01 00 00 00       	mov    $0x1,%eax
+  40015a:	bb 05 00 00 00       	mov    $0x5,%ebx
+  40015f:	48 8d 35 3a 06 00 00 	lea    0x63a(%rip),%rsi        # 4007a0 <memcpy+0x4e>
+  400166:	48 89 c7             	mov    %rax,%rdi
+  400169:	cd 80                	int    $0x80
+  40016b:	eb fe                	jmp    40016b <main+0x5e>
+  40016d:	0f 1f 00             	nopl   (%rax)
+
+0000000000400170 <write>:
+#include<syscall.h>
+#include<unistd.h>
+
+ssize_t write(int arg1,char * arg2, uint64_t arg3) {
+  ssize_t res;
+        if (arg1 < 0) {
+  400170:	85 ff                	test   %edi,%edi
+  400172:	78 10                	js     400184 <write+0x14>
+#include<stdio.h>
+#include<stdlib.h>
+#include<syscall.h>
+#include<unistd.h>
+
+ssize_t write(int arg1,char * arg2, uint64_t arg3) {
+  400174:	53                   	push   %rbx
+  400175:	48 63 ff             	movslq %edi,%rdi
+  400178:	b8 01 00 00 00       	mov    $0x1,%eax
+  40017d:	48 89 d3             	mov    %rdx,%rbx
+  400180:	cd 80                	int    $0x80
+                return 0;
+        }
+
+        res = (ssize_t)syscall_3((uint64_t)SYS_write,(uint64_t)arg1,(uint64_t)arg2,(uint64_t)arg3);
+
+  return res;
+  400182:	eb 06                	jmp    40018a <write+0x1a>
+#include<unistd.h>
+
+ssize_t write(int arg1,char * arg2, uint64_t arg3) {
+  ssize_t res;
+        if (arg1 < 0) {
+                return 0;
+  400184:	b8 00 00 00 00       	mov    $0x0,%eax
+  400189:	c3                   	retq   
+        }
+
+        res = (ssize_t)syscall_3((uint64_t)SYS_write,(uint64_t)arg1,(uint64_t)arg2,(uint64_t)arg3);
+
+  return res;
+}
+  40018a:	5b                   	pop    %rbx
+  40018b:	c3                   	retq   
+
+000000000040018c <read>:
+
+ssize_t read(int fd, char *buf, size_t count) {
+
+        ssize_t res;
+        if (fd < 0) {
+  40018c:	85 ff                	test   %edi,%edi
+  40018e:	78 10                	js     4001a0 <read+0x14>
+        res = (ssize_t)syscall_3((uint64_t)SYS_write,(uint64_t)arg1,(uint64_t)arg2,(uint64_t)arg3);
+
+  return res;
+}
+
+ssize_t read(int fd, char *buf, size_t count) {
+  400190:	53                   	push   %rbx
+  400191:	48 63 ff             	movslq %edi,%rdi
+  400194:	b8 00 00 00 00       	mov    $0x0,%eax
+  400199:	48 89 d3             	mov    %rdx,%rbx
+  40019c:	cd 80                	int    $0x80
+        ssize_t res;
+        if (fd < 0) {
+                return 0;
+        }
+        res= (ssize_t)syscall_3(SYS_read,(uint64_t)fd,(uint64_t)buf,(uint64_t)count);
+        return res;
+  40019e:	eb 06                	jmp    4001a6 <read+0x1a>
+
+ssize_t read(int fd, char *buf, size_t count) {
+
+        ssize_t res;
+        if (fd < 0) {
+                return 0;
+  4001a0:	b8 00 00 00 00       	mov    $0x0,%eax
+  4001a5:	c3                   	retq   
+        }
+        res= (ssize_t)syscall_3(SYS_read,(uint64_t)fd,(uint64_t)buf,(uint64_t)count);
+        return res;
+}
+  4001a6:	5b                   	pop    %rbx
+  4001a7:	c3                   	retq   
+
+00000000004001a8 <open>:
+
+int open(char *pathname,int flags)
+{
+  4001a8:	53                   	push   %rbx
+   return val;
+}
+
+static __inline uint64_t syscall_2(uint64_t n, uint64_t a1, uint64_t a2) {
+	uint64_t res;
+    __asm__ volatile ("int %1"\
+  4001a9:	48 63 ce             	movslq %esi,%rcx
+  4001ac:	b8 02 00 00 00       	mov    $0x2,%eax
+  4001b1:	48 89 fb             	mov    %rdi,%rbx
+  4001b4:	cd 80                	int    $0x80
+        int res;
+        res = (int)syscall_2(SYS_open,(uint64_t)pathname,(uint64_t)flags);
+        return res;
+}
+  4001b6:	5b                   	pop    %rbx
+  4001b7:	c3                   	retq   
+
+00000000004001b8 <close>:
+
+
+int close(int fd)
+{
+  4001b8:	41 57                	push   %r15
+  4001ba:	41 56                	push   %r14
+  4001bc:	41 55                	push   %r13
+  4001be:	41 54                	push   %r12
+  4001c0:	55                   	push   %rbp
+  4001c1:	53                   	push   %rbx
+    return a;
+}
+
+static __inline uint64_t syscall_1(uint64_t n, uint64_t a1) {
+	uint64_t val;                                                                                                                          
+    __asm volatile("movq %1,%%rax;"
+  4001c2:	48 63 df             	movslq %edi,%rbx
+  4001c5:	b8 03 00 00 00       	mov    $0x3,%eax
+  4001ca:	48 89 c0             	mov    %rax,%rax
+  4001cd:	48 89 db             	mov    %rbx,%rbx
+  4001d0:	cd 80                	int    $0x80
+  4001d2:	48 89 c0             	mov    %rax,%rax
+        int res;
+        res=(int)syscall_1(SYS_close,(uint64_t)fd);
+        return res;
+}
+  4001d5:	5b                   	pop    %rbx
+  4001d6:	5d                   	pop    %rbp
+  4001d7:	41 5c                	pop    %r12
+  4001d9:	41 5d                	pop    %r13
+  4001db:	41 5e                	pop    %r14
+  4001dd:	41 5f                	pop    %r15
+  4001df:	c3                   	retq   
+
+00000000004001e0 <listfiles>:
+
+int listfiles(char *path,int pipe){
+  4001e0:	53                   	push   %rbx
+   return val;
+}
+
+static __inline uint64_t syscall_2(uint64_t n, uint64_t a1, uint64_t a2) {
+	uint64_t res;
+    __asm__ volatile ("int %1"\
+  4001e1:	48 63 ce             	movslq %esi,%rcx
+  4001e4:	b8 10 00 00 00       	mov    $0x10,%eax
+  4001e9:	48 89 fb             	mov    %rdi,%rbx
+  4001ec:	cd 80                	int    $0x80
+
+        int ret;
+        ret = (int) syscall_2(SYS_listfiles,(uint64_t)path,(uint64_t)pipe);
+
+        return ret;
+}
+  4001ee:	5b                   	pop    %rbx
+  4001ef:	c3                   	retq   
+
+00000000004001f0 <catfiles>:
+
+int catfiles(char *path,int pipe){
+  4001f0:	53                   	push   %rbx
+  4001f1:	48 63 ce             	movslq %esi,%rcx
+  4001f4:	b8 11 00 00 00       	mov    $0x11,%eax
+  4001f9:	48 89 fb             	mov    %rdi,%rbx
+  4001fc:	cd 80                	int    $0x80
+
+        int ret;
+        ret = (int) syscall_2(SYS_catfiles,(uint64_t)path,(uint64_t)pipe);
+
+        return ret;
+}
+  4001fe:	5b                   	pop    %rbx
+  4001ff:	c3                   	retq   
+
+0000000000400200 <echofiles>:
+
+
+int echofiles(char *path,int pipe){
+  400200:	53                   	push   %rbx
+  400201:	48 63 ce             	movslq %esi,%rcx
+  400204:	b8 12 00 00 00       	mov    $0x12,%eax
+  400209:	48 89 fb             	mov    %rdi,%rbx
+  40020c:	cd 80                	int    $0x80
+
+        int ret;
+        ret = (int) syscall_2(SYS_echofiles,(uint64_t)path,(uint64_t)pipe);
+
+        return ret;
+}
+  40020e:	5b                   	pop    %rbx
+  40020f:	c3                   	retq   
+
+0000000000400210 <getcwd>:
+
+char* getcwd(
+        char *buf,
+        size_t size)
+{
+  400210:	53                   	push   %rbx
+  400211:	b8 4f 00 00 00       	mov    $0x4f,%eax
+  400216:	48 89 fb             	mov    %rdi,%rbx
+  400219:	48 89 f1             	mov    %rsi,%rcx
+  40021c:	cd 80                	int    $0x80
+        char *cbuf;
+        cbuf = (char *) syscall_2(SYS_getcwd,(uint64_t)buf,(uint64_t)size);
+
+        return cbuf;
+}
+  40021e:	5b                   	pop    %rbx
+  40021f:	c3                   	retq   
+
+0000000000400220 <chdir>:
+
+int chdir(char *path)
+{
+  400220:	41 57                	push   %r15
+  400222:	41 56                	push   %r14
+  400224:	41 55                	push   %r13
+  400226:	41 54                	push   %r12
+  400228:	55                   	push   %rbp
+  400229:	53                   	push   %rbx
+  40022a:	48 89 fb             	mov    %rdi,%rbx
+    return a;
+}
+
+static __inline uint64_t syscall_1(uint64_t n, uint64_t a1) {
+	uint64_t val;                                                                                                                          
+    __asm volatile("movq %1,%%rax;"
+  40022d:	b8 50 00 00 00       	mov    $0x50,%eax
+  400232:	48 89 c0             	mov    %rax,%rax
+  400235:	48 89 db             	mov    %rbx,%rbx
+  400238:	cd 80                	int    $0x80
+  40023a:	48 89 c0             	mov    %rax,%rax
+        int res;
+        res = (int)syscall_1(SYS_chdir,(uint64_t)path);
+        return res;
+}
+  40023d:	5b                   	pop    %rbx
+  40023e:	5d                   	pop    %rbp
+  40023f:	41 5c                	pop    %r12
+  400241:	41 5d                	pop    %r13
+  400243:	41 5e                	pop    %r14
+  400245:	41 5f                	pop    %r15
+  400247:	c3                   	retq   
+
+0000000000400248 <fork>:
+//-----------------------------------------Generic Syscalls-----------------------------------//
+
+static __inline uint64_t syscall_0(uint64_t n) {
+
+	uint64_t a = -1;  
+    __asm volatile("int $0x80" : "=a" (a) : "0" (n));  
+  400248:	b8 39 00 00 00       	mov    $0x39,%eax
+  40024d:	cd 80                	int    $0x80
+pid_t fork(void)
+{
+        pid_t return_code;
+        return_code = (pid_t) syscall_0(SYS_fork);
+        return return_code;
+}
+  40024f:	c3                   	retq   
+
+0000000000400250 <getpid>:
+  400250:	b8 27 00 00 00       	mov    $0x27,%eax
+  400255:	cd 80                	int    $0x80
+pid_t getpid(void)
+{
+        pid_t pid;
+        pid = (pid_t) syscall_0(SYS_getpid);
+        return pid;
+}
+  400257:	c3                   	retq   
+
+0000000000400258 <getppid>:
+  400258:	b8 6e 00 00 00       	mov    $0x6e,%eax
+  40025d:	cd 80                	int    $0x80
+pid_t getppid(void)
+{
+        pid_t ppid;
+        ppid = (pid_t) syscall_0(SYS_getppid);
+        return ppid;
+}
+  40025f:	c3                   	retq   
+
+0000000000400260 <waitpid>:
+
+
+
+pid_t waitpid(pid_t pid,int *status,int options)
+{
+  400260:	53                   	push   %rbx
+    return res;
+}
+
+static __inline uint64_t syscall_3(uint64_t n, uint64_t a1, uint64_t a2, uint64_t a3) {
+	uint64_t a; 
+    __asm__ volatile("int $0x80" : "=a" (a) : "0" (n), "D" ((uint64_t)a1), "S" ((uint64_t)a2), "b"((uint64_t)a3)); 
+  400261:	89 ff                	mov    %edi,%edi
+  400263:	48 63 da             	movslq %edx,%rbx
+  400266:	b8 3d 00 00 00       	mov    $0x3d,%eax
+  40026b:	cd 80                	int    $0x80
+        pid_t retPid;
+        retPid = (pid_t)syscall_3(SYS_wait4,(uint64_t)pid,(uint64_t)status,(uint64_t)options);
+
+        return retPid;
+}
+  40026d:	5b                   	pop    %rbx
+  40026e:	c3                   	retq   
+
+000000000040026f <execve>:
+
+int execve(const char *filename,char *const argv[],char *const envp[])
+{
+
+        const char *temp = filename;
+        while (temp && !((*temp == 'b') && (*(temp+1) == 'i') && (*(temp+2) == 'n'))){
+  40026f:	48 85 ff             	test   %rdi,%rdi
+  400272:	75 07                	jne    40027b <execve+0xc>
+  400274:	eb 1c                	jmp    400292 <execve+0x23>
+  400276:	48 ff c7             	inc    %rdi
+  400279:	74 17                	je     400292 <execve+0x23>
+  40027b:	80 3f 62             	cmpb   $0x62,(%rdi)
+  40027e:	66 90                	xchg   %ax,%ax
+  400280:	75 f4                	jne    400276 <execve+0x7>
+  400282:	80 7f 01 69          	cmpb   $0x69,0x1(%rdi)
+  400286:	75 ee                	jne    400276 <execve+0x7>
+  400288:	80 7f 02 6e          	cmpb   $0x6e,0x2(%rdi)
+  40028c:	75 e8                	jne    400276 <execve+0x7>
+  40028e:	66 90                	xchg   %ax,%ax
+  400290:	eb 0f                	jmp    4002a1 <execve+0x32>
+
+                temp++;
+        }
+        if ((*temp == '\0') || (*(temp+4) == '\0')) {
+  400292:	80 3c 25 00 00 00 00 	cmpb   $0x0,0x0
+  400299:	00 
+  40029a:	74 26                	je     4002c2 <execve+0x53>
+  40029c:	bf 00 00 00 00       	mov    $0x0,%edi
+  4002a1:	80 7f 04 00          	cmpb   $0x0,0x4(%rdi)
+  4002a5:	74 21                	je     4002c8 <execve+0x59>
+
+        return retPid;
+}
+
+int execve(const char *filename,char *const argv[],char *const envp[])
+{
+  4002a7:	53                   	push   %rbx
+  4002a8:	b8 3b 00 00 00       	mov    $0x3b,%eax
+  4002ad:	48 89 d3             	mov    %rdx,%rbx
+  4002b0:	cd 80                	int    $0x80
+
+
+        int return_code;
+        return_code = (int)syscall_3(SYS_execve,(uint64_t)temp,(uint64_t)argv,(uint64_t)envp);
+
+        if (-125 <= return_code && return_code < 0) {
+  4002b2:	8d 50 7d             	lea    0x7d(%rax),%edx
+                return_code = -1;
+  4002b5:	83 fa 7c             	cmp    $0x7c,%edx
+  4002b8:	ba ff ff ff ff       	mov    $0xffffffff,%edx
+  4002bd:	0f 46 c2             	cmovbe %edx,%eax
+  4002c0:	eb 0c                	jmp    4002ce <execve+0x5f>
+        while (temp && !((*temp == 'b') && (*(temp+1) == 'i') && (*(temp+2) == 'n'))){
+
+                temp++;
+        }
+        if ((*temp == '\0') || (*(temp+4) == '\0')) {
+                return -1;
+  4002c2:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  4002c7:	c3                   	retq   
+  4002c8:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  4002cd:	c3                   	retq   
+
+        if (-125 <= return_code && return_code < 0) {
+                return_code = -1;
+        }
+        return return_code;
+}
+  4002ce:	5b                   	pop    %rbx
+  4002cf:	90                   	nop
+  4002d0:	c3                   	retq   
+
+00000000004002d1 <execvpe>:
+
+int execvpe(const char *filename,char *const argv[],char *const envp[])
+{
+        const char *temp = filename;
+        while ( temp && !((*temp == 'b') && (*(temp+1) == 'i') && (*(temp+2) == 'n'))){
+  4002d1:	48 85 ff             	test   %rdi,%rdi
+  4002d4:	75 07                	jne    4002dd <execvpe+0xc>
+  4002d6:	eb 1a                	jmp    4002f2 <execvpe+0x21>
+  4002d8:	48 ff c7             	inc    %rdi
+  4002db:	74 15                	je     4002f2 <execvpe+0x21>
+  4002dd:	80 3f 62             	cmpb   $0x62,(%rdi)
+  4002e0:	75 f6                	jne    4002d8 <execvpe+0x7>
+  4002e2:	80 7f 01 69          	cmpb   $0x69,0x1(%rdi)
+  4002e6:	75 f0                	jne    4002d8 <execvpe+0x7>
+  4002e8:	80 7f 02 6e          	cmpb   $0x6e,0x2(%rdi)
+  4002ec:	75 ea                	jne    4002d8 <execvpe+0x7>
+  4002ee:	66 90                	xchg   %ax,%ax
+  4002f0:	eb 0f                	jmp    400301 <execvpe+0x30>
+                temp++;
+        }
+        if ((*temp == '\0') || (*(temp+4) == '\0')) {
+  4002f2:	80 3c 25 00 00 00 00 	cmpb   $0x0,0x0
+  4002f9:	00 
+  4002fa:	74 26                	je     400322 <execvpe+0x51>
+  4002fc:	bf 00 00 00 00       	mov    $0x0,%edi
+  400301:	80 7f 04 00          	cmpb   $0x0,0x4(%rdi)
+  400305:	74 21                	je     400328 <execvpe+0x57>
+        }
+        return return_code;
+}
+
+int execvpe(const char *filename,char *const argv[],char *const envp[])
+{
+  400307:	53                   	push   %rbx
+  400308:	b8 3b 00 00 00       	mov    $0x3b,%eax
+  40030d:	48 89 d3             	mov    %rdx,%rbx
+  400310:	cd 80                	int    $0x80
+        }
+        int return_code;
+
+        return_code = (int)syscall_3(SYS_execve,(uint64_t)temp,(uint64_t)argv,(uint64_t)envp);
+
+        if (-125 <= return_code && return_code < 0) {
+  400312:	8d 50 7d             	lea    0x7d(%rax),%edx
+                return_code = -1;
+  400315:	83 fa 7c             	cmp    $0x7c,%edx
+  400318:	ba ff ff ff ff       	mov    $0xffffffff,%edx
+  40031d:	0f 46 c2             	cmovbe %edx,%eax
+  400320:	eb 0c                	jmp    40032e <execvpe+0x5d>
+        const char *temp = filename;
+        while ( temp && !((*temp == 'b') && (*(temp+1) == 'i') && (*(temp+2) == 'n'))){
+                temp++;
+        }
+        if ((*temp == '\0') || (*(temp+4) == '\0')) {
+                return -1;
+  400322:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  400327:	c3                   	retq   
+  400328:	b8 ff ff ff ff       	mov    $0xffffffff,%eax
+  40032d:	c3                   	retq   
+
+        if (-125 <= return_code && return_code < 0) {
+                return_code = -1;
+        }
+        return return_code;
+}
+  40032e:	5b                   	pop    %rbx
+  40032f:	90                   	nop
+  400330:	c3                   	retq   
+
+0000000000400331 <sleep>:
+
+
+unsigned int sleep(unsigned int seconds)
+{
+  400331:	41 57                	push   %r15
+  400333:	41 56                	push   %r14
+  400335:	41 55                	push   %r13
+  400337:	41 54                	push   %r12
+  400339:	55                   	push   %rbp
+  40033a:	53                   	push   %rbx
+    return a;
+}
+
+static __inline uint64_t syscall_1(uint64_t n, uint64_t a1) {
+	uint64_t val;                                                                                                                          
+    __asm volatile("movq %1,%%rax;"
+  40033b:	69 c7 e8 03 00 00    	imul   $0x3e8,%edi,%eax
+  400341:	89 c0                	mov    %eax,%eax
+  400343:	bb 23 00 00 00       	mov    $0x23,%ebx
+  400348:	48 89 d8             	mov    %rbx,%rax
+  40034b:	48 89 c3             	mov    %rax,%rbx
+  40034e:	cd 80                	int    $0x80
+  400350:	48 89 c0             	mov    %rax,%rax
+        unsigned int ret;
+        unsigned int ticks = seconds*1000;
+        ret =(unsigned int)syscall_1(SYS_nanosleep,(uint64_t)ticks);
+        return ret;
+}
+  400353:	5b                   	pop    %rbx
+  400354:	5d                   	pop    %rbp
+  400355:	41 5c                	pop    %r12
+  400357:	41 5d                	pop    %r13
+  400359:	41 5e                	pop    %r14
+  40035b:	41 5f                	pop    %r15
+  40035d:	c3                   	retq   
+
+000000000040035e <kill>:
+
+
+int kill(int pid)
+{
+  40035e:	41 57                	push   %r15
+  400360:	41 56                	push   %r14
+  400362:	41 55                	push   %r13
+  400364:	41 54                	push   %r12
+  400366:	55                   	push   %rbp
+  400367:	53                   	push   %rbx
+  400368:	48 63 df             	movslq %edi,%rbx
+  40036b:	b8 0d 00 00 00       	mov    $0xd,%eax
+  400370:	48 89 c0             	mov    %rax,%rax
+  400373:	48 89 db             	mov    %rbx,%rbx
+  400376:	cd 80                	int    $0x80
+  400378:	48 89 c0             	mov    %rax,%rax
+        int ret;
+        ret = (int)syscall_1(SYS_killprocess,(uint64_t)pid);
+        return ret;
+}
+  40037b:	5b                   	pop    %rbx
+  40037c:	5d                   	pop    %rbp
+  40037d:	41 5c                	pop    %r12
+  40037f:	41 5d                	pop    %r13
+  400381:	41 5e                	pop    %r14
+  400383:	41 5f                	pop    %r15
+  400385:	c3                   	retq   
+
+0000000000400386 <exit>:
+//-----------------------------------------Generic Syscalls-----------------------------------//
+
+static __inline uint64_t syscall_0(uint64_t n) {
+
+	uint64_t a = -1;  
+    __asm volatile("int $0x80" : "=a" (a) : "0" (n));  
+  400386:	b8 3c 00 00 00       	mov    $0x3c,%eax
+  40038b:	cd 80                	int    $0x80
+  40038d:	c3                   	retq   
+
+000000000040038e <puts>:
+#include <stdio.h>
+#include <syscall.h>
+#include <string.h>
+#include <unistd.h>
+int puts(char *s)
+{
+  40038e:	53                   	push   %rbx
+  40038f:	48 89 fb             	mov    %rdi,%rbx
+
+if(write(1,(char *)s,(uint64_t)strlen(s))==1)
+  400392:	e8 12 01 00 00       	callq  4004a9 <strlen>
+  400397:	48 63 d0             	movslq %eax,%rdx
+  40039a:	48 89 de             	mov    %rbx,%rsi
+  40039d:	bf 01 00 00 00       	mov    $0x1,%edi
+  4003a2:	e8 c9 fd ff ff       	callq  400170 <write>
+  4003a7:	48 83 f8 01          	cmp    $0x1,%rax
+  4003ab:	0f 94 c0             	sete   %al
+  4003ae:	0f b6 c0             	movzbl %al,%eax
+	return 0;
+/*
+  for( ; *s; ++s) if (putchar(*s) != *s) return EOF;
+  return (putchar('\n') == '\n') ? 0 : EOF;
+*/
+}
+  4003b1:	5b                   	pop    %rbx
+  4003b2:	c3                   	retq   
+  4003b3:	66 2e 0f 1f 84 00 00 	nopw   %cs:0x0(%rax,%rax,1)
+  4003ba:	00 00 00 
+  4003bd:	0f 1f 00             	nopl   (%rax)
+
+00000000004003c0 <strcpy>:
+#include <string.h>
+
+//static char *token = NULL;
+
+char* strcpy(char *dest,const char *src)
+{
+  4003c0:	48 89 f8             	mov    %rdi,%rax
+	char *saved = dest; 
+
+	while(*src){
+  4003c3:	0f b6 16             	movzbl (%rsi),%edx
+  4003c6:	84 d2                	test   %dl,%dl
+  4003c8:	74 14                	je     4003de <strcpy+0x1e>
+  4003ca:	48 89 f9             	mov    %rdi,%rcx
+		*dest = *src;
+  4003cd:	88 11                	mov    %dl,(%rcx)
+		src++;
+  4003cf:	48 ff c6             	inc    %rsi
+		dest++;
+  4003d2:	48 ff c1             	inc    %rcx
+
+char* strcpy(char *dest,const char *src)
+{
+	char *saved = dest; 
+
+	while(*src){
+  4003d5:	0f b6 16             	movzbl (%rsi),%edx
+  4003d8:	84 d2                	test   %dl,%dl
+  4003da:	75 f1                	jne    4003cd <strcpy+0xd>
+  4003dc:	eb 03                	jmp    4003e1 <strcpy+0x21>
+  4003de:	48 89 f9             	mov    %rdi,%rcx
+		*dest = *src;
+		src++;
+		dest++;
+	}
+	*dest = '\0';
+  4003e1:	c6 01 00             	movb   $0x0,(%rcx)
+
+	return saved;
+}
+  4003e4:	c3                   	retq   
+
+00000000004003e5 <strncpy>:
+
+char* strncpy(char *dest,const char *src,int count)
+{
+  4003e5:	48 89 f8             	mov    %rdi,%rax
+	char *saved = dest;
+
+	while(count && *src) {
+  4003e8:	85 d2                	test   %edx,%edx
+  4003ea:	74 2b                	je     400417 <strncpy+0x32>
+  4003ec:	0f b6 0e             	movzbl (%rsi),%ecx
+  4003ef:	84 c9                	test   %cl,%cl
+  4003f1:	74 29                	je     40041c <strncpy+0x37>
+  4003f3:	8d 52 ff             	lea    -0x1(%rdx),%edx
+  4003f6:	4c 8d 44 17 01       	lea    0x1(%rdi,%rdx,1),%r8
+  4003fb:	48 89 fa             	mov    %rdi,%rdx
+		*dest = *src;
+  4003fe:	88 0a                	mov    %cl,(%rdx)
+		src++;
+  400400:	48 ff c6             	inc    %rsi
+		dest++;
+  400403:	48 ff c2             	inc    %rdx
+
+char* strncpy(char *dest,const char *src,int count)
+{
+	char *saved = dest;
+
+	while(count && *src) {
+  400406:	4c 39 c2             	cmp    %r8,%rdx
+  400409:	74 14                	je     40041f <strncpy+0x3a>
+  40040b:	0f b6 0e             	movzbl (%rsi),%ecx
+  40040e:	84 c9                	test   %cl,%cl
+  400410:	75 ec                	jne    4003fe <strncpy+0x19>
+		*dest = *src;
+		src++;
+		dest++;
+  400412:	49 89 d0             	mov    %rdx,%r8
+  400415:	eb 08                	jmp    40041f <strncpy+0x3a>
+
+char* strncpy(char *dest,const char *src,int count)
+{
+	char *saved = dest;
+
+	while(count && *src) {
+  400417:	49 89 f8             	mov    %rdi,%r8
+  40041a:	eb 03                	jmp    40041f <strncpy+0x3a>
+  40041c:	49 89 f8             	mov    %rdi,%r8
+		*dest = *src;
+		src++;
+		dest++;
+		count--;
+	}
+	*dest = '\0';
+  40041f:	41 c6 00 00          	movb   $0x0,(%r8)
+
+	return saved;
+}
+  400423:	c3                   	retq   
+
+0000000000400424 <strcmp>:
+
+int strcmp(const char *str1,const char *str2)
+{
+	while(*str1 && *str2 && *str1 == *str2) {
+  400424:	0f b6 07             	movzbl (%rdi),%eax
+  400427:	84 c0                	test   %al,%al
+  400429:	74 23                	je     40044e <strcmp+0x2a>
+  40042b:	0f b6 16             	movzbl (%rsi),%edx
+  40042e:	38 d0                	cmp    %dl,%al
+  400430:	75 1c                	jne    40044e <strcmp+0x2a>
+  400432:	84 d2                	test   %dl,%dl
+  400434:	74 18                	je     40044e <strcmp+0x2a>
+		str1++;
+  400436:	48 ff c7             	inc    %rdi
+		str2++;
+  400439:	48 ff c6             	inc    %rsi
+	return saved;
+}
+
+int strcmp(const char *str1,const char *str2)
+{
+	while(*str1 && *str2 && *str1 == *str2) {
+  40043c:	0f b6 07             	movzbl (%rdi),%eax
+  40043f:	84 c0                	test   %al,%al
+  400441:	74 0b                	je     40044e <strcmp+0x2a>
+  400443:	0f b6 16             	movzbl (%rsi),%edx
+  400446:	38 d0                	cmp    %dl,%al
+  400448:	75 04                	jne    40044e <strcmp+0x2a>
+  40044a:	84 d2                	test   %dl,%dl
+  40044c:	75 e8                	jne    400436 <strcmp+0x12>
+		str1++;
+		str2++;
+	}
+
+	return *str1 - *str2;
+  40044e:	0f be c0             	movsbl %al,%eax
+  400451:	0f be 16             	movsbl (%rsi),%edx
+  400454:	29 d0                	sub    %edx,%eax
+}
+  400456:	c3                   	retq   
+
+0000000000400457 <strncmp>:
+
+int strncmp(const char *str1,const char *str2,int count)
+{
+        while(count) {
+  400457:	85 d2                	test   %edx,%edx
+  400459:	75 32                	jne    40048d <strncmp+0x36>
+		}
+		count--;
+		
+        }
+
+        return 0;
+  40045b:	b8 00 00 00 00       	mov    $0x0,%eax
+  400460:	c3                   	retq   
+}
+
+int strncmp(const char *str1,const char *str2,int count)
+{
+        while(count) {
+		if(*str1 && *str2 && *str1 == *str2) {
+  400461:	0f b6 07             	movzbl (%rdi),%eax
+  400464:	84 c0                	test   %al,%al
+  400466:	74 1c                	je     400484 <strncmp+0x2d>
+  400468:	0f b6 16             	movzbl (%rsi),%edx
+  40046b:	38 d0                	cmp    %dl,%al
+  40046d:	75 15                	jne    400484 <strncmp+0x2d>
+  40046f:	84 d2                	test   %dl,%dl
+  400471:	74 11                	je     400484 <strncmp+0x2d>
+                str1++;
+  400473:	48 ff c7             	inc    %rdi
+                str2++;
+  400476:	48 ff c6             	inc    %rsi
+	return *str1 - *str2;
+}
+
+int strncmp(const char *str1,const char *str2,int count)
+{
+        while(count) {
+  400479:	48 39 ce             	cmp    %rcx,%rsi
+  40047c:	75 e3                	jne    400461 <strncmp+0xa>
+		}
+		count--;
+		
+        }
+
+        return 0;
+  40047e:	b8 00 00 00 00       	mov    $0x0,%eax
+  400483:	c3                   	retq   
+        while(count) {
+		if(*str1 && *str2 && *str1 == *str2) {
+                str1++;
+                str2++;
+		} else {
+			return *str1-*str2;
+  400484:	0f be c0             	movsbl %al,%eax
+  400487:	0f be 16             	movsbl (%rsi),%edx
+  40048a:	29 d0                	sub    %edx,%eax
+  40048c:	c3                   	retq   
+}
+
+int strncmp(const char *str1,const char *str2,int count)
+{
+        while(count) {
+		if(*str1 && *str2 && *str1 == *str2) {
+  40048d:	0f b6 07             	movzbl (%rdi),%eax
+  400490:	84 c0                	test   %al,%al
+  400492:	74 f0                	je     400484 <strncmp+0x2d>
+  400494:	0f b6 0e             	movzbl (%rsi),%ecx
+  400497:	38 c8                	cmp    %cl,%al
+  400499:	75 e9                	jne    400484 <strncmp+0x2d>
+  40049b:	84 c9                	test   %cl,%cl
+  40049d:	74 e5                	je     400484 <strncmp+0x2d>
+  40049f:	8d 42 ff             	lea    -0x1(%rdx),%eax
+  4004a2:	48 8d 4c 06 01       	lea    0x1(%rsi,%rax,1),%rcx
+  4004a7:	eb ca                	jmp    400473 <strncmp+0x1c>
+
+00000000004004a9 <strlen>:
+
+int strlen(const char *str)
+{
+	int len = 0;
+
+	while(*str++ )
+  4004a9:	48 8d 57 01          	lea    0x1(%rdi),%rdx
+  4004ad:	80 3f 00             	cmpb   $0x0,(%rdi)
+  4004b0:	74 12                	je     4004c4 <strlen+0x1b>
+  4004b2:	b8 00 00 00 00       	mov    $0x0,%eax
+		len++;
+  4004b7:	ff c0                	inc    %eax
+  4004b9:	48 ff c2             	inc    %rdx
+
+int strlen(const char *str)
+{
+	int len = 0;
+
+	while(*str++ )
+  4004bc:	80 7a ff 00          	cmpb   $0x0,-0x1(%rdx)
+  4004c0:	75 f5                	jne    4004b7 <strlen+0xe>
+  4004c2:	f3 c3                	repz retq 
+}
+
+
+int strlen(const char *str)
+{
+	int len = 0;
+  4004c4:	b8 00 00 00 00       	mov    $0x0,%eax
+
+	while(*str++ )
+		len++;
+
+	return len;
+}
+  4004c9:	c3                   	retq   
+
+00000000004004ca <strcat>:
+
+void strcat(char *new,const char *orig)
+{
+	while (*new!= '\0')
+  4004ca:	80 3f 00             	cmpb   $0x0,(%rdi)
+  4004cd:	74 08                	je     4004d7 <strcat+0xd>
+        	new++;
+  4004cf:	48 ff c7             	inc    %rdi
+	return len;
+}
+
+void strcat(char *new,const char *orig)
+{
+	while (*new!= '\0')
+  4004d2:	80 3f 00             	cmpb   $0x0,(%rdi)
+  4004d5:	75 f8                	jne    4004cf <strcat+0x5>
+        	new++;
+	do
+    	{
+	        *new++ = *orig++;
+  4004d7:	48 ff c7             	inc    %rdi
+  4004da:	48 ff c6             	inc    %rsi
+  4004dd:	0f b6 46 ff          	movzbl -0x1(%rsi),%eax
+  4004e1:	88 47 ff             	mov    %al,-0x1(%rdi)
+
+    	}
+    	while (*orig != '\0') ;
+  4004e4:	80 3e 00             	cmpb   $0x0,(%rsi)
+  4004e7:	75 ee                	jne    4004d7 <strcat+0xd>
+}
+  4004e9:	f3 c3                	repz retq 
+
+00000000004004eb <strncat>:
+
+void strncat(char *new,const char *orig,int count)
+{
+	if(count) {
+  4004eb:	85 d2                	test   %edx,%edx
+  4004ed:	74 37                	je     400526 <strncat+0x3b>
+		while(*++new);
+  4004ef:	48 ff c7             	inc    %rdi
+  4004f2:	80 3f 00             	cmpb   $0x0,(%rdi)
+  4004f5:	75 f8                	jne    4004ef <strncat+0x4>
+
+		while(count && *orig){
+  4004f7:	0f b6 06             	movzbl (%rsi),%eax
+  4004fa:	84 c0                	test   %al,%al
+  4004fc:	74 22                	je     400520 <strncat+0x35>
+  4004fe:	8d 52 ff             	lea    -0x1(%rdx),%edx
+  400501:	48 8d 54 17 01       	lea    0x1(%rdi,%rdx,1),%rdx
+			*new++ = *orig++;
+  400506:	48 ff c7             	inc    %rdi
+  400509:	48 ff c6             	inc    %rsi
+  40050c:	88 47 ff             	mov    %al,-0x1(%rdi)
+void strncat(char *new,const char *orig,int count)
+{
+	if(count) {
+		while(*++new);
+
+		while(count && *orig){
+  40050f:	48 39 fa             	cmp    %rdi,%rdx
+  400512:	74 0f                	je     400523 <strncat+0x38>
+  400514:	0f b6 06             	movzbl (%rsi),%eax
+  400517:	84 c0                	test   %al,%al
+  400519:	75 eb                	jne    400506 <strncat+0x1b>
+			*new++ = *orig++;
+  40051b:	48 89 fa             	mov    %rdi,%rdx
+  40051e:	eb 03                	jmp    400523 <strncat+0x38>
+}
+
+void strncat(char *new,const char *orig,int count)
+{
+	if(count) {
+		while(*++new);
+  400520:	48 89 fa             	mov    %rdi,%rdx
+		while(count && *orig){
+			*new++ = *orig++;
+			count--;
+		}
+		
+		*new = '\0';
+  400523:	c6 02 00             	movb   $0x0,(%rdx)
+  400526:	f3 c3                	repz retq 
+
+0000000000400528 <index>:
+	}
+}
+
+char* index(char *str,char chr)
+{
+  400528:	89 f2                	mov    %esi,%edx
+	while(*str) {
+  40052a:	0f b6 07             	movzbl (%rdi),%eax
+  40052d:	84 c0                	test   %al,%al
+  40052f:	74 21                	je     400552 <index+0x2a>
+  		if (*str == chr)
+  400531:	40 38 c6             	cmp    %al,%sil
+  400534:	75 0c                	jne    400542 <index+0x1a>
+  400536:	eb 20                	jmp    400558 <index+0x30>
+  400538:	38 d0                	cmp    %dl,%al
+  40053a:	66 0f 1f 44 00 00    	nopw   0x0(%rax,%rax,1)
+  400540:	74 1a                	je     40055c <index+0x34>
+    			return (char *) str;
+
+		str++;
+  400542:	48 ff c7             	inc    %rdi
+	}
+}
+
+char* index(char *str,char chr)
+{
+	while(*str) {
+  400545:	0f b6 07             	movzbl (%rdi),%eax
+  400548:	84 c0                	test   %al,%al
+  40054a:	75 ec                	jne    400538 <index+0x10>
+    			return (char *) str;
+
+		str++;
+	}
+
+	return NULL;
+  40054c:	b8 00 00 00 00       	mov    $0x0,%eax
+  400551:	c3                   	retq   
+  400552:	b8 00 00 00 00       	mov    $0x0,%eax
+  400557:	c3                   	retq   
+}
+
+char* index(char *str,char chr)
+{
+	while(*str) {
+  		if (*str == chr)
+  400558:	48 89 f8             	mov    %rdi,%rax
+  40055b:	c3                   	retq   
+    			return (char *) str;
+
+		str++;
+  40055c:	48 89 f8             	mov    %rdi,%rax
+  40055f:	90                   	nop
+	}
+
+	return NULL;
+}	
+  400560:	c3                   	retq   
+
+0000000000400561 <bzero>:
+void
+bzero(void *string,unsigned bytes)
+{
+	char *res = string;
+
+	while (bytes != 0) {
+  400561:	85 f6                	test   %esi,%esi
+  400563:	74 14                	je     400579 <bzero+0x18>
+  400565:	8d 46 ff             	lea    -0x1(%rsi),%eax
+  400568:	48 8d 44 07 01       	lea    0x1(%rdi,%rax,1),%rax
+		*res++ = 0;
+  40056d:	48 ff c7             	inc    %rdi
+  400570:	c6 47 ff 00          	movb   $0x0,-0x1(%rdi)
+void
+bzero(void *string,unsigned bytes)
+{
+	char *res = string;
+
+	while (bytes != 0) {
+  400574:	48 39 c7             	cmp    %rax,%rdi
+  400577:	75 f4                	jne    40056d <bzero+0xc>
+  400579:	f3 c3                	repz retq 
+
+000000000040057b <strtok>:
+	}
+}
+
+
+char* strtok(char* parse_str,const char* delims)
+{
+  40057b:	55                   	push   %rbp
+  40057c:	53                   	push   %rbx
+  40057d:	48 83 ec 08          	sub    $0x8,%rsp
+  400581:	48 89 fd             	mov    %rdi,%rbp
+  400584:	48 89 f3             	mov    %rsi,%rbx
+
+	static char *token = NULL;
+	char *str_ptr = NULL;
+	int index = 0;
+	int str_len = strlen(delims);
+  400587:	48 89 f7             	mov    %rsi,%rdi
+  40058a:	e8 1a ff ff ff       	callq  4004a9 <strlen>
+  40058f:	89 c6                	mov    %eax,%esi
+ 
+	if(!parse_str && !token)
+  400591:	48 85 ed             	test   %rbp,%rbp
+  400594:	75 11                	jne    4005a7 <strtok+0x2c>
+  400596:	48 8b 05 c3 06 20 00 	mov    0x2006c3(%rip),%rax        # 600c60 <__bss_start>
+  40059d:	48 85 c0             	test   %rax,%rax
+  4005a0:	75 1c                	jne    4005be <strtok+0x43>
+  4005a2:	e9 e4 00 00 00       	jmpq   40068b <strtok+0x110>
+		return NULL;
+ 
+	if(parse_str && !token)
+  4005a7:	48 83 3d b1 06 20 00 	cmpq   $0x0,0x2006b1(%rip)        # 600c60 <__bss_start>
+  4005ae:	00 
+        	token = parse_str;
+  4005af:	48 0f 45 2d a9 06 20 	cmovne 0x2006a9(%rip),%rbp        # 600c60 <__bss_start>
+  4005b6:	00 
+  4005b7:	48 89 2d a2 06 20 00 	mov    %rbp,0x2006a2(%rip)        # 600c60 <__bss_start>
+
+	str_ptr = token;
+  4005be:	48 8b 05 9b 06 20 00 	mov    0x20069b(%rip),%rax        # 600c60 <__bss_start>
+	while(1) {
+        	for(index = 0; index < str_len; index ++) {
+  4005c5:	85 f6                	test   %esi,%esi
+  4005c7:	7e 30                	jle    4005f9 <strtok+0x7e>
+            		if(*str_ptr == delims[index]) {
+  4005c9:	0f b6 38             	movzbl (%rax),%edi
+  4005cc:	48 8d 4b 01          	lea    0x1(%rbx),%rcx
+  4005d0:	ba 00 00 00 00       	mov    $0x0,%edx
+  4005d5:	40 3a 3b             	cmp    (%rbx),%dil
+  4005d8:	75 17                	jne    4005f1 <strtok+0x76>
+  4005da:	eb 0b                	jmp    4005e7 <strtok+0x6c>
+  4005dc:	48 ff c1             	inc    %rcx
+  4005df:	40 38 79 ff          	cmp    %dil,-0x1(%rcx)
+  4005e3:	75 0c                	jne    4005f1 <strtok+0x76>
+  4005e5:	eb 05                	jmp    4005ec <strtok+0x71>
+	if(parse_str && !token)
+        	token = parse_str;
+
+	str_ptr = token;
+	while(1) {
+        	for(index = 0; index < str_len; index ++) {
+  4005e7:	ba 00 00 00 00       	mov    $0x0,%edx
+            		if(*str_ptr == delims[index]) {
+                		str_ptr ++;
+  4005ec:	48 ff c0             	inc    %rax
+                		break;
+  4005ef:	eb 0d                	jmp    4005fe <strtok+0x83>
+	if(parse_str && !token)
+        	token = parse_str;
+
+	str_ptr = token;
+	while(1) {
+        	for(index = 0; index < str_len; index ++) {
+  4005f1:	ff c2                	inc    %edx
+  4005f3:	39 d6                	cmp    %edx,%esi
+  4005f5:	75 e5                	jne    4005dc <strtok+0x61>
+  4005f7:	eb 09                	jmp    400602 <strtok+0x87>
+  4005f9:	ba 00 00 00 00       	mov    $0x0,%edx
+                		str_ptr ++;
+                		break;
+            		}
+        	}
+ 
+		if(index == str_len) {
+  4005fe:	39 d6                	cmp    %edx,%esi
+  400600:	75 c3                	jne    4005c5 <strtok+0x4a>
+               		token = str_ptr;
+  400602:	48 89 05 57 06 20 00 	mov    %rax,0x200657(%rip)        # 600c60 <__bss_start>
+  400609:	4c 8d 40 01          	lea    0x1(%rax),%r8
+               		break;
+        	}
+    	}
+
+	if(*token == '\0') {
+  40060d:	ba 00 00 00 00       	mov    $0x0,%edx
+  400612:	80 38 00             	cmpb   $0x0,(%rax)
+  400615:	75 3b                	jne    400652 <strtok+0xd7>
+		token = NULL;
+  400617:	48 c7 05 3e 06 20 00 	movq   $0x0,0x20063e(%rip)        # 600c60 <__bss_start>
+  40061e:	00 00 00 00 
+		return token;
+  400622:	b8 00 00 00 00       	mov    $0x0,%eax
+  400627:	eb 62                	jmp    40068b <strtok+0x110>
+  400629:	48 ff c1             	inc    %rcx
+	}
+
+	while(*token != '\0') {
+		for(index = 0; index < str_len; index ++) {
+			if(*token == delims[index]) {
+  40062c:	40 3a 79 ff          	cmp    -0x1(%rcx),%dil
+  400630:	75 12                	jne    400644 <strtok+0xc9>
+				*token = '\0';
+  400632:	41 c6 41 ff 00       	movb   $0x0,-0x1(%r9)
+            		}
+        	}
+ 
+        	token ++;
+        	
+		if (index < str_len)
+  400637:	39 d6                	cmp    %edx,%esi
+  400639:	7e 0f                	jle    40064a <strtok+0xcf>
+  40063b:	4c 89 0d 1e 06 20 00 	mov    %r9,0x20061e(%rip)        # 600c60 <__bss_start>
+  400642:	eb 47                	jmp    40068b <strtok+0x110>
+		token = NULL;
+		return token;
+	}
+
+	while(*token != '\0') {
+		for(index = 0; index < str_len; index ++) {
+  400644:	ff c2                	inc    %edx
+  400646:	39 d6                	cmp    %edx,%esi
+  400648:	75 df                	jne    400629 <strtok+0xae>
+  40064a:	49 ff c0             	inc    %r8
+  40064d:	ba 01 00 00 00       	mov    $0x1,%edx
+  400652:	49 8d 48 ff          	lea    -0x1(%r8),%rcx
+  400656:	4d 89 c1             	mov    %r8,%r9
+	if(*token == '\0') {
+		token = NULL;
+		return token;
+	}
+
+	while(*token != '\0') {
+  400659:	41 0f b6 78 ff       	movzbl -0x1(%r8),%edi
+  40065e:	40 84 ff             	test   %dil,%dil
+  400661:	75 0d                	jne    400670 <strtok+0xf5>
+  400663:	84 d2                	test   %dl,%dl
+  400665:	74 24                	je     40068b <strtok+0x110>
+  400667:	48 89 0d f2 05 20 00 	mov    %rcx,0x2005f2(%rip)        # 600c60 <__bss_start>
+  40066e:	eb 1b                	jmp    40068b <strtok+0x110>
+		for(index = 0; index < str_len; index ++) {
+  400670:	85 f6                	test   %esi,%esi
+  400672:	7e d6                	jle    40064a <strtok+0xcf>
+			if(*token == delims[index]) {
+  400674:	40 3a 3b             	cmp    (%rbx),%dil
+  400677:	74 0b                	je     400684 <strtok+0x109>
+  400679:	48 8d 4b 01          	lea    0x1(%rbx),%rcx
+  40067d:	ba 00 00 00 00       	mov    $0x0,%edx
+  400682:	eb c0                	jmp    400644 <strtok+0xc9>
+				*token = '\0';
+  400684:	41 c6 40 ff 00       	movb   $0x0,-0x1(%r8)
+  400689:	eb b0                	jmp    40063b <strtok+0xc0>
+        	
+		if (index < str_len)
+            		break;
+    	}
+    	return str_ptr;
+}
+  40068b:	48 83 c4 08          	add    $0x8,%rsp
+  40068f:	5b                   	pop    %rbx
+  400690:	5d                   	pop    %rbp
+  400691:	c3                   	retq   
+
+0000000000400692 <str_to_int>:
+
+
+int str_to_int(char *str)
+{
+  400692:	48 83 ec 18          	sub    $0x18,%rsp
+  400696:	48 89 fe             	mov    %rdi,%rsi
+	 int pos = 0;
+        char buffer[10] = {'\0'};
+  400699:	48 c7 44 24 06 00 00 	movq   $0x0,0x6(%rsp)
+  4006a0:	00 00 
+  4006a2:	66 c7 44 24 0e 00 00 	movw   $0x0,0xe(%rsp)
+        strcpy(buffer,str);
+  4006a9:	48 8d 7c 24 06       	lea    0x6(%rsp),%rdi
+  4006ae:	e8 0d fd ff ff       	callq  4003c0 <strcpy>
+        while ((buffer[pos] != '\0') && (buffer[pos] != '\n' ) ){
+  4006b3:	0f b6 44 24 06       	movzbl 0x6(%rsp),%eax
+  4006b8:	84 c0                	test   %al,%al
+  4006ba:	74 58                	je     400714 <str_to_int+0x82>
+  4006bc:	3c 0a                	cmp    $0xa,%al
+  4006be:	74 54                	je     400714 <str_to_int+0x82>
+  4006c0:	b8 00 00 00 00       	mov    $0x0,%eax
+  4006c5:	48 8d 74 24 07       	lea    0x7(%rsp),%rsi
+  4006ca:	89 c1                	mov    %eax,%ecx
+  4006cc:	0f b6 14 06          	movzbl (%rsi,%rax,1),%edx
+  4006d0:	48 ff c0             	inc    %rax
+  4006d3:	84 d2                	test   %dl,%dl
+  4006d5:	74 05                	je     4006dc <str_to_int+0x4a>
+  4006d7:	80 fa 0a             	cmp    $0xa,%dl
+  4006da:	75 ee                	jne    4006ca <str_to_int+0x38>
+        pos++;
+        }
+        pos--;
+        int val = 0;
+        int io =1;
+        while (pos >= 0) {
+  4006dc:	85 c9                	test   %ecx,%ecx
+  4006de:	78 3b                	js     40071b <str_to_int+0x89>
+  4006e0:	be 01 00 00 00       	mov    $0x1,%esi
+  4006e5:	b8 00 00 00 00       	mov    $0x0,%eax
+                buffer[pos] = buffer[pos] - 48;
+  4006ea:	48 63 f9             	movslq %ecx,%rdi
+  4006ed:	0f b6 54 3c 06       	movzbl 0x6(%rsp,%rdi,1),%edx
+  4006f2:	83 ea 30             	sub    $0x30,%edx
+  4006f5:	88 54 3c 06          	mov    %dl,0x6(%rsp,%rdi,1)
+                val = val + buffer[pos]*io;
+  4006f9:	0f be d2             	movsbl %dl,%edx
+  4006fc:	0f af d6             	imul   %esi,%edx
+  4006ff:	01 d0                	add    %edx,%eax
+                pos--;
+  400701:	ff c9                	dec    %ecx
+                io= io*10;
+  400703:	8d 14 f5 00 00 00 00 	lea    0x0(,%rsi,8),%edx
+  40070a:	8d 34 72             	lea    (%rdx,%rsi,2),%esi
+        pos++;
+        }
+        pos--;
+        int val = 0;
+        int io =1;
+        while (pos >= 0) {
+  40070d:	83 f9 ff             	cmp    $0xffffffff,%ecx
+  400710:	75 d8                	jne    4006ea <str_to_int+0x58>
+  400712:	eb 0c                	jmp    400720 <str_to_int+0x8e>
+        strcpy(buffer,str);
+        while ((buffer[pos] != '\0') && (buffer[pos] != '\n' ) ){
+        pos++;
+        }
+        pos--;
+        int val = 0;
+  400714:	b8 00 00 00 00       	mov    $0x0,%eax
+  400719:	eb 05                	jmp    400720 <str_to_int+0x8e>
+  40071b:	b8 00 00 00 00       	mov    $0x0,%eax
+                io= io*10;
+        }
+
+        return val;
+
+}
+  400720:	48 83 c4 18          	add    $0x18,%rsp
+  400724:	c3                   	retq   
+
+0000000000400725 <atoi>:
+int atoi(char *str)
+{
+  400725:	48 83 ec 08          	sub    $0x8,%rsp
+
+        int ret = str_to_int(str);
+  400729:	e8 64 ff ff ff       	callq  400692 <str_to_int>
+        return ret;
+}
+  40072e:	48 83 c4 08          	add    $0x8,%rsp
+  400732:	c3                   	retq   
+
+0000000000400733 <memset>:
+void memset(void *ptr, int value, uint64_t num)
+{
+        int i = 0;
+        for(; i < num; i++)
+  400733:	48 85 d2             	test   %rdx,%rdx
+  400736:	74 18                	je     400750 <memset+0x1d>
+  400738:	b9 00 00 00 00       	mov    $0x0,%ecx
+  40073d:	b8 00 00 00 00       	mov    $0x0,%eax
+                ((char *)ptr)[i] = value;
+  400742:	40 88 34 0f          	mov    %sil,(%rdi,%rcx,1)
+        return ret;
+}
+void memset(void *ptr, int value, uint64_t num)
+{
+        int i = 0;
+        for(; i < num; i++)
+  400746:	ff c0                	inc    %eax
+  400748:	48 63 c8             	movslq %eax,%rcx
+  40074b:	48 39 d1             	cmp    %rdx,%rcx
+  40074e:	72 f2                	jb     400742 <memset+0xf>
+  400750:	f3 c3                	repz retq 
+
+0000000000400752 <memcpy>:
+                ((char *)ptr)[i] = value;
+}
+
+void *memcpy(void *dest, const void *src, uint64_t n)
+{
+  400752:	48 89 f8             	mov    %rdi,%rax
+    unsigned char *pd = (unsigned char *)dest;
+    const unsigned char *ps = (unsigned char *)src;
+    if ( ps < pd )
+  400755:	48 39 f7             	cmp    %rsi,%rdi
+  400758:	77 0c                	ja     400766 <memcpy+0x14>
+        for (pd += n, ps += n; n--;)
+            *--pd = *--ps;
+    else
+        while(n--)
+  40075a:	b9 00 00 00 00       	mov    $0x0,%ecx
+  40075f:	48 85 d2             	test   %rdx,%rdx
+  400762:	75 1d                	jne    400781 <memcpy+0x2f>
+  400764:	f3 c3                	repz retq 
+void *memcpy(void *dest, const void *src, uint64_t n)
+{
+    unsigned char *pd = (unsigned char *)dest;
+    const unsigned char *ps = (unsigned char *)src;
+    if ( ps < pd )
+        for (pd += n, ps += n; n--;)
+  400766:	48 8d 4a ff          	lea    -0x1(%rdx),%rcx
+  40076a:	48 85 d2             	test   %rdx,%rdx
+  40076d:	74 22                	je     400791 <memcpy+0x3f>
+            *--pd = *--ps;
+  40076f:	0f b6 14 0e          	movzbl (%rsi,%rcx,1),%edx
+  400773:	88 14 08             	mov    %dl,(%rax,%rcx,1)
+void *memcpy(void *dest, const void *src, uint64_t n)
+{
+    unsigned char *pd = (unsigned char *)dest;
+    const unsigned char *ps = (unsigned char *)src;
+    if ( ps < pd )
+        for (pd += n, ps += n; n--;)
+  400776:	48 ff c9             	dec    %rcx
+  400779:	48 83 f9 ff          	cmp    $0xffffffffffffffff,%rcx
+  40077d:	75 f0                	jne    40076f <memcpy+0x1d>
+  40077f:	f3 c3                	repz retq 
+            *--pd = *--ps;
+    else
+        while(n--)
+            *pd++ = *ps++;
+  400781:	0f b6 3c 0e          	movzbl (%rsi,%rcx,1),%edi
+  400785:	40 88 3c 08          	mov    %dil,(%rax,%rcx,1)
+  400789:	48 ff c1             	inc    %rcx
+    const unsigned char *ps = (unsigned char *)src;
+    if ( ps < pd )
+        for (pd += n, ps += n; n--;)
+            *--pd = *--ps;
+    else
+        while(n--)
+  40078c:	48 39 ca             	cmp    %rcx,%rdx
+  40078f:	75 f0                	jne    400781 <memcpy+0x2f>
+            *pd++ = *ps++;
+    return dest;
+}
+  400791:	f3 c3                	repz retq 

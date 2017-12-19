@@ -5,31 +5,31 @@
 #include<string.h>
 #include<sys/tarfs.h>
 char arglist[10][64];
-char ipCommand[1024];
+char ipCommand[128];
 char s_cwd[128];
-char tempcwd[1024];
+char tempcwd[128];
 //char cwd[1024]="bin/";
-char PS1[1024];
-char commands[10][1000];
+//char PS1[1024];
+char commands[10][100];
 int n,sp;
 char tempecho[1024];
-char tempcat[1024];
-char temppath[1024];
-char shellbuf[2048];
-char shellcommands[20][1000];
+char tempcat[64];
+char temppath[32];
+char shellbuf[128];
+char shellcommands[10][100];
 void clearip()
 {
-	memset(tempcat,0,1024);
-	memset(ipCommand,0,1024);
-	memset(PS1,0,1024);
+	memset(tempcat,0,64);
+	memset(ipCommand,0,128);
+	//memset(PS1,0,1024);
 	for (int i =0; i<10; i++)
 	{
-		memset(commands[i],0,1000);
+		memset(commands[i],0,100);
 		memset(arglist[i],0,64);
 	}
-	for( int i = 0; i < 20 ; i++)
+	for( int i = 0; i < 10 ; i++)
 	{
-		memset(shellcommands[i],0,1000);
+		memset(shellcommands[i],0,100);
 	}
 	memset(s_cwd,'\0',128);
 }
@@ -280,8 +280,9 @@ int main(int argc, char *argv[], char *envp[])
 	//printf("Temp: %d\n", temp);
 while(1);*/
 	char m_cwd[128];
-	printf("Running SBUSH......\n");	
-    	//listfiles("bin/",1);
+	printf("..............Welcome to F E R D O S............\n");
+    	printf("Type \"help\" if you want help.\n");
+	//listfiles("bin/",1);
 	//strcpy(cwd,"bin/");
 	do{	
 		clearip();   
@@ -291,7 +292,12 @@ while(1);*/
 			printf("~");
 		printf("%s>",m_cwd);
        		gets(ipCommand);
-        	//printf("%s,%d",ipCommand,strlen(ipCommand));
+		if(strcmp(ipCommand,"help")==0)
+		{
+			catfiles("etc/README.txt",1);
+        		printf("\n");
+		}
+		//printf("%s,%d",ipCommand,strlen(ipCommand));
 		performCommand();
         	}while(strcmp (ipCommand, "exit")!=0);
     		printf("\nExiting SBUSH... Stuck on While loop");
