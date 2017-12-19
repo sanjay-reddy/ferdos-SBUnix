@@ -21,3 +21,9 @@ gdb ./kernel
 
 At the (gdb) prompt, connect with:
 target remote localhost:9999
+
+
+If you’d really like to work on your own machine
+We do not provide support for it, but you can get your own usable environment for the course projects up and running by installing Ubuntu 16.04 and:
+apt-get install build-essential gdb git screen tmux emacs exuberant-ctags ccache eclipse xterm gtkwave tcl-dev zsh strace curl mkisofs qemu dosfstools syslinux
+Unfortunately, the standard version of gdb does not correctly handle QEMU’s 64-bit boot process, resulting in a ‘Packet too long’ error. The version of gdb in the course containers already fixes this. If you are working on your own machine, you will need to build gdb from source and apply a patch.(https://sourceware.org/bugzilla/attachment.cgi?id=8512)
